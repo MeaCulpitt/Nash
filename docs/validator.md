@@ -1,31 +1,26 @@
-# Nash Validator Design: The Economic Oracle
+# Nash Subnet: Validator Design
 
-Validators in Nash ensure that the decentralized marketplace remains honest and efficient. They do not just "check" data; they actively probe manifolds to ensure mathematical soundness.
+### Scoring and Evaluation Methodology
+The Nash Validator employs a multi-stage, asymmetric evaluation process to ensure that miners are providing genuine "Economic Intelligence" rather than static or cached data.
 
-## 1. Scoring and Evaluation Methodology
+1.  **Fidelity Audit (Latent Sampling):** Instead of evaluating the entire manifold (which is computationally prohibitive), validators perform stochastic probes at random coordinates $(x, y, z)$. They compare the miner's reported utility value against the "Ground Truth" calculated locally by the validator. The accuracy score ($S_a$) is derived using Mean Squared Error (MSE):
+    $$S_a = 1 - \text{min}(1, \frac{MSE}{\text{threshold}})$$
+2.  **Optimality Verification:** Validators run a high-precision gradient descent pass to identify the true global Nash Equilibrium for a given manifold pair. They then measure the "Optimality Gap" ($G_o$)—the distance between the miner's proposed coordinate and the validator's ground-truth coordinate. 
+3.  **Efficiency Scoring:** To prevent "lazy mining," validators incorporate a time-decay multiplier ($T$). Responses that arrive earlier in the block cycle receive a higher weight, ensuring the network remains capable of instant settlement.
 
-### A. The Fidelity Audit (Primary Metric)
-The validator deconstructs the miner’s Nash Manifold using Latent Sampling.
-* **The Process:** The validator takes raw intent ($I_{raw}$) and the manifold ($M$) and selects $K$ random coordinates.
-* **Scoring:** The Fidelity Score ($F$) is derived from:
-  $$F = \exp(-\text{MSE}(U_r, U_m))$$
+The final weight $W$ set on-chain for a miner is a moving average of these components:
+$$W_{t+1} = (1 - \rho)W_t + \rho(\text{Fidelity} \times \text{Optimality} \times \text{Speed})$$
 
-### B. Equilibrium Validation (The Pareto Test)
-The validator checks if the miner's proposed Equilibrium Point is truly optimal.
-* **The Penalty:** If the validator finds a different point that offers higher mutual utility, the miner’s score is slashed.
+### Evaluation Cadence
+The validation cycle is synchronized with the Bittensor block clock to ensure network-wide consistency:
 
-### C. Speed & Size Multipliers
-* **Latency Multiplier:** Responses slower than the 50ms "Gold Standard" face exponential decay.
-* **Compression Bonus:** Miners who represent complex intent in smaller packets receive a bonus.
+* **Step-Level (Every Block ~12s):** Validators broadcast RFEs (Requests for Equilibrium) to a randomized subset of the metagraph to ensure constant coverage without overwhelming network bandwidth.
+* **Epoch-Level (Every 360 Blocks / 1 Tempo):** Validators aggregate their internal scores, normalize them across the current active miner set, and submit the final weight vector to the Subtensor blockchain.
+* **Sync-Level:** Validators continuously synchronize their local metagraph state to track new registrations and deregistered UIDs, ensuring that only "Immune" and "Top-Performing" miners are evaluated for rewards.
 
-## 2. Evaluation Cadence
-* **Block-Level Sampling:** Validators query a random subset of miners every block (12 seconds) with "Synthetic Challenges."
-* **Epoch-Level Weight Setting:** Every 360 blocks, validators aggregate rolling averages to set weights.
+### Validator Incentive Alignment
+Nash aligns validator incentives with the health of the broader ecosystem through three pillars:
 
-## 3. Validator Incentive Alignment
-
-### A. VTrust (Validation Trust)
-A validator's dividends depend on their VTrust score. If their rankings deviate from the Stake-Weighted Median of the network, rewards are clipped.
-
-### B. The Discovery Bounty
-To encourage "Active Auditing," Nash rewards validators who are the first to detect a "Cheat Point" (intentional dishonesty in a manifold) with higher Incentive Weight.
+1.  **VTrust (Validator Trust):** Under Yuma Consensus, validators earn rewards (Dividends) based on how well their weight assignments align with the stake-weighted majority. This discourages "lonely" or idiosyncratic scoring and forces validators to be mathematically objective.
+2.  **Market-Maker Rewards:** Validators act as the primary gateways for external agents to access the subnet. By providing high-fidelity validation, they increase the "Utility Value" of the Nash subnet, which attracts more delegated stake from TAO holders and increases the validator's own emission share.
+3.  **Anti-Plagiarism Checks:** Validators are incentivized to use unique, randomized entropy seeds in their challenges. If a validator uses predictable tasks, they risk their miners being "copied" by others, which lowers the consensus score and reduces the validator's performance metrics.

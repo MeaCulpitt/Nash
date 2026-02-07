@@ -1,48 +1,29 @@
-# NASH Miner Design: High-Fidelity Manifold Generation
+# NASH Miner Design: Economic Equilibrium Discovery
 
-## 1. Miner Tasks
-The NASH miner acts as the computational engine of the "Economic Molt," transforming abstract agentic intent into actionable mathematical geometry. The process is engineered to ensure high-speed resolution while maintaining the privacy of the participants.
+## 1. Miner Tasks: The PoEF Pipeline
+Miners on the NASH subnet act as decentralized game-theoretic solvers. Their primary function is to resolve the "Surface of Agreement" between competing economic intents (Buyer vs. Seller) and pinpoint the optimal coordinate for trade settlement.
 
-### Phase I: Encrypted Intent Encoding
-Miners receive "Intent Vectors" that have been pre-processed via the NASH SDK's Differential Privacy layer. The miner's task is to map these high-dimensional requirements into a compact **Nash Manifold**. 
+### Task 1: Encrypted Intent Decoding & Manifold Generation
+Miners receive high-dimensional, encrypted intent vectors from validators. The first task is to project these vectors into a local simulation environment to generate a **Nash Manifold Surface**—a mathematical representation of all possible points of agreement where the utility for both parties is non-zero.
 
-Crucially, the miner only generates the **Surface of Agreement**—the boundary representing acceptable trade conditions. The agent's **Internal Utility Curve** (absolute reservation prices and private strategic constraints) remains hidden within the high-dimensional latent space of the agent’s private model, never reaching the miner.
+### Task 2: Geometric Equilibrium Discovery
+Once the manifold is generated, the miner must execute a high-speed search for the **Global Nash Equilibrium**. This is the specific coordinate on the surface where no party can improve their utility without diminishing the other's. This task is NP-hard in multi-modal environments and requires sophisticated neural-heuristic hybrid models.
 
-### Phase II: Geometric Equilibrium Discovery
-Once manifolds are generated, the miner must solve for the "Overlapping Manifold"—the intersection of the buyer's and seller's geometric surfaces. The miner runs optimization algorithms (e.g., Gradient-Play Dynamics) to identify the **Nash Equilibrium Coordinate**. This coordinate represents the unique point of mutual agreement where neither agent can improve their outcome by deviating, resolved without the miner ever seeing the agents' raw database or full intent history.
+### Task 3: Commitment & Proof Generation
+To prevent "copy-cat" mining (weight copying), miners must generate a commitment hash of their manifold before submitting the final result. They also produce a cryptographic **Proof-of-Computation** that validates the model utilized to find the equilibrium was not pre-computed or cached.
 
 ---
 
 ## 2. Expected Input → Output Format
-NASH utilizes a high-density binary serialization format to ensure sub-100ms compatibility across the metagraph.
+Miners interact with the Validator through the `NashIntentSynapse`.
 
-### Expected Input (The Synapse)
-* **Encrypted Intent Vector (`Tensor[N, D]`):** A differentially private representation of agent preferences.
-* **Context Header (`JSON/Bytes`):** Meta-constraints including transaction deadlines and priority weights.
-* **Partial Manifold ID:** The specific counter-party surface to be resolved against.
-
-### Expected Output (The Submission)
-* **Nash Manifold Surface (`Compressed Tensor`):** A 128–512 byte representation of the "Surface of Agreement."
-* **Equilibrium Point (`Vector[D]`):** The final negotiated coordinates for the trade.
-* **Commitment Hash:** A cryptographic signature ensuring the manifold was generated honestly from the provided inputs.
-
----
-
-## 3. Performance Dimensions
-Miner performance is evaluated through **Time-Weighted Fidelity (TWF)**, balancing technical precision with the speed of the agentic economy.
-
-### Quality & Structural Fidelity (Partial Revelation)
-Miners must ensure the generated manifold surface is a precise reflection of the revealed intent.
-* **Metric:** Mean Squared Error (MSE) on sampled surface points.
-* **Target:** MSE < 0.001.
-* **Privacy Guard:** Any miner attempt to "probe" beyond the revealed surface results in a Fidelity mismatch, leading to immediate reward slashing.
-
-### Speed & Latency (The TWF Core)
-Speed is the primary denominator in the Nash Efficiency Ratio ($R$). 
-* **Gold Standard:** <50ms. 
-* **The Reward Cliff:** Due to TWF logic, rewards decay exponentially beyond 100ms. This incentivizes miners to optimize CUDA kernels for the geometric intersection math, ensuring settlement happens at machine-speed.
-
-### Accuracy (Equilibrium Stability)
-The proposed Equilibrium must be mathematically stable. If a validator finds a more optimal coordinate (an "Optimality Gap") that was visible on the revealed manifold surfaces, the miner is penalized.
-* **Target:** Pareto Optimality. 
-* **Verification:** Validators utilize latent sampling to verify that the proposed point sits at the exact intersection of the submitted surfaces.
+### Input Format (Validator → Miner)
+The miner receives a challenge packet containing encrypted intent data and environmental constraints:
+```json
+{
+  "challenge_id": "HEX-512",
+  "intent_vector": "ENCRYPTED_BLOB",
+  "utility_weights": {"buyer": 0.5, "seller": 0.5},
+  "market_constraints": ["non-negative-spread", "max-slippage-2%"],
+  "validator_timestamp": 1700000000.00
+}

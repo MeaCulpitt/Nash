@@ -1,46 +1,48 @@
 # NASH Miner Design: High-Fidelity Manifold Generation
 
 ## 1. Miner Tasks
-The NASH miner acts as the computational engine of the "Economic Molt," transforming abstract agentic intent into actionable mathematical geometry. The mining process is split into two high-performance execution phases:
+The NASH miner acts as the computational engine of the "Economic Molt," transforming abstract agentic intent into actionable mathematical geometry. The process is engineered to ensure high-speed resolution while maintaining the privacy of the participants.
 
-### Phase I: Intent Encoding (Manifold Generation)
-Miners receive raw "Intent Vectors" from the validator. The task is to compress these high-dimensional agent requirements (price elasticity, quality thresholds, time constraints) into a compact **Nash Manifold**. Miners typically utilize Hypernetworks or Variational Autoencoders (VAEs) to ensure this dimensionality reduction occurs with zero information loss, representing the agent's utility function as a continuous geometric surface.
+### Phase I: Encrypted Intent Encoding
+Miners receive "Intent Vectors" that have been pre-processed via the NASH SDK's Differential Privacy layer. The miner's task is to map these high-dimensional requirements into a compact **Nash Manifold**. 
 
-### Phase II: Equilibrium Discovery (The Solve)
-Once manifolds are generated, the miner must find the "Overlapping Manifold"—the intersection of the buyer's and seller's preferences. The miner runs optimization algorithms (e.g., Gradient Descent or Bayesian Optimization) to identify the **Nash Equilibrium Coordinate**. This coordinate represents the unique point where both agents achieve maximum mutual utility, and neither can improve their outcome by deviating.
+Crucially, the miner only generates the **Surface of Agreement**—the boundary representing acceptable trade conditions. The agent's **Internal Utility Curve** (absolute reservation prices and private strategic constraints) remains hidden within the high-dimensional latent space of the agent’s private model, never reaching the miner.
+
+### Phase II: Geometric Equilibrium Discovery
+Once manifolds are generated, the miner must solve for the "Overlapping Manifold"—the intersection of the buyer's and seller's geometric surfaces. The miner runs optimization algorithms (e.g., Gradient-Play Dynamics) to identify the **Nash Equilibrium Coordinate**. This coordinate represents the unique point of mutual agreement where neither agent can improve their outcome by deviating, resolved without the miner ever seeing the agents' raw database or full intent history.
 
 ---
 
 ## 2. Expected Input → Output Format
-To maintain sub-100ms compatibility, the NASH protocol utilizes a high-density binary serialization format for all I/O operations.
+NASH utilizes a high-density binary serialization format to ensure sub-100ms compatibility across the metagraph.
 
 ### Expected Input (The Synapse)
-* **Intent Vector (`Tensor[N, D]`):** A raw representation of agent preferences and constraints.
-* **Context Header (`JSON/Bytes`):** Meta-constraints including transaction deadlines, clearinghouse requirements, and priority weights.
-* **Target Manifold ID:** The specific counter-party manifold to be resolved against.
+* **Encrypted Intent Vector (`Tensor[N, D]`):** A differentially private representation of agent preferences.
+* **Context Header (`JSON/Bytes`):** Meta-constraints including transaction deadlines and priority weights.
+* **Partial Manifold ID:** The specific counter-party surface to be resolved against.
 
 ### Expected Output (The Submission)
-* **Nash Manifold (`Compressed Tensor`):** A 128–512 byte representation of the agent's intent topology.
+* **Nash Manifold Surface (`Compressed Tensor`):** A 128–512 byte representation of the "Surface of Agreement."
 * **Equilibrium Point (`Vector[D]`):** The final negotiated coordinates for the trade.
-* **Cryptographic Commitment:** A hash of the manifold to prevent plagiarism and weight-copying by other miners on the metagraph.
+* **Commitment Hash:** A cryptographic signature ensuring the manifold was generated honestly from the provided inputs.
 
 ---
 
 ## 3. Performance Dimensions
-Miner performance is scored through the **Time-Weighted Fidelity (TWF)** lens, which balances technical accuracy with the ruthless speed required by the agentic economy.
+Miner performance is evaluated through **Time-Weighted Fidelity (TWF)**, balancing technical precision with the speed of the agentic economy.
 
-### Quality & Economic Fidelity
-Miners must ensure their generated manifolds are a precise reflection of the raw intent. 
-* **Metric:** Mean Squared Error (MSE). 
-* **Target:** MSE < 0.001. 
-* **Penalty:** Deviations in fidelity result in immediate slashing of the "Fidelity Score," making the submission ineligible for high-tier rewards.
+### Quality & Structural Fidelity (Partial Revelation)
+Miners must ensure the generated manifold surface is a precise reflection of the revealed intent.
+* **Metric:** Mean Squared Error (MSE) on sampled surface points.
+* **Target:** MSE < 0.001.
+* **Privacy Guard:** Any miner attempt to "probe" beyond the revealed surface results in a Fidelity mismatch, leading to immediate reward slashing.
 
 ### Speed & Latency (The TWF Core)
 Speed is the primary denominator in the Nash Efficiency Ratio ($R$). 
 * **Gold Standard:** <50ms. 
-* **The Reward Cliff:** Due to TWF logic, rewards decay exponentially beyond the 100ms mark. This incentivizes miners to optimize CUDA kernels and utilize high-bandwidth memory (HBM3) to ensure the settlement happens at machine-speed.
+* **The Reward Cliff:** Due to TWF logic, rewards decay exponentially beyond 100ms. This incentivizes miners to optimize CUDA kernels for the geometric intersection math, ensuring settlement happens at machine-speed.
 
 ### Accuracy (Equilibrium Stability)
-The proposed Equilibrium must be stable. If a validator finds a more optimal coordinate (an "Optimality Gap"), the miner is penalized.
+The proposed Equilibrium must be mathematically stable. If a validator finds a more optimal coordinate (an "Optimality Gap") that was visible on the revealed manifold surfaces, the miner is penalized.
 * **Target:** Pareto Optimality. 
-* **Validation:** Validators utilize latent sampling to verify that the proposed point truly sits at the intersection of the submitted manifolds.
+* **Verification:** Validators utilize latent sampling to verify that the proposed point sits at the exact intersection of the submitted surfaces.

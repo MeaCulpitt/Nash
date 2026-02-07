@@ -1,51 +1,44 @@
-# Incentive & Mechanism Design: Proof of Economic Fidelity (PoEF)
+# NASH Incentive & Mechanism Design: Proof of Economic Fidelity (PoEF)
 
-## 1. Emission and Reward Logic
-The NASH emission schedule is governed by **Proof of Economic Fidelity (PoEF)**, a mechanism that prioritizes the high-speed resolution of complex economic intent. Emissions are distributed via the Yuma Consensus, utilizing the **Nash Efficiency Ratio ($R$)** as the primary scoring metric:
+## 1. Emission and Reward Logic: The Dual-Layer Yield
+NASH operates on a **Synthetic-Equilibrium Model** where emissions are governed by the **Nash Efficiency Ratio (NER)**. Unlike simple compute subnets, NASH splits its reward potential into two distinct dimensions to balance stability with market discovery.
 
-$$R = \frac{\text{Fidelity Score} \times \text{Significance}}{\ln(\text{Packet Size}) + \text{Latency (ms)}}$$
+### Pool A: The Stability Layer (Reputation Weighted)
+Utilizes **Time-Weighted Fidelity (TWF)** to reward the "Trust Moat" of a neuron.
+* **Logic:** Emissions are multiplied by a rolling average of the miner's historical accuracy and uptime.
+* **Impact:** This rewards long-term participants, making "flash-mining" or seasonal participation economically inefficient.
 
-### Reward Weighting
-* **Structural Fidelity (60%):** Rewards miners for the geometric accuracy of the "Surface of Agreement." This ensures the manifold is a truthful representation of the agent's revealed intent.
-* **Equilibrium Resolution (40%):** Rewards miners for identifying the optimal coordinate where counter-party manifolds intersect.
-
-### Time-Weighted Fidelity (TWF)
-To drive the "Economic Molt," NASH enforces a **50ms Gold Standard**. The TWF logic applies a continuous decay to the reward based on latency. While accuracy is paramount, a high-fidelity manifold resolved in 500ms is economically inferior to a slightly less complex one resolved in 50ms, as machine-speed liquidity is the subnet's core product.
+### Pool B: The Discovery Layer (Utility Weighted)
+Utilizes **Proof of Marginal Utility (PMU)** to reward "Economic Alpha."
+* **Logic:** Rewards scale based on the scarcity of the trade resolution. If 200 miners solve a simple USD-BTC pair, the individual reward is minimal. If a single miner resolves a complex, multi-leg industrial asset trade, the PMU multiplier triggers a significant emission spike.
+* **Impact:** Forces the network's intelligence to spread across the entire economic landscape, ensuring no trade intent goes unserved.
 
 ---
 
 ## 2. Incentive Alignment for Miners and Validators
-NASH creates a symbiotic loop where both participants are financially motivated to maintain a high-integrity settlement layer:
-
-* **Miners:** Incentivized to optimize both their AI models (for fidelity) and their hardware stacks (for latency). High performance directly translates to higher $R$ scores and increased TAO emissions.
-* **Validators:** Act as **Economic Auditors**. Under Dynamic TAO (dTAO), validators earn dividends by accurately identifying top-tier miners. They are incentivized to maintain high-precision ground-truth models to distinguish between genuine "Economic Intelligence" and low-effort approximations.
+* **Miners:** Positioned as **Economic Arbitrageurs**. They are incentivized to find the "hardest" problems (High PMU) while maintaining a flawless performance record (High TWF). Their goal is to find the point of maximum economic efficiency—the Nash Equilibrium—where no party can improve their position without making another worse off.
+* **Validators:** Positioned as **Equilibrium Auditors**. They do not just verify if a trade *can* happen; they verify if the miner's proposal is the *most* efficient possible resolution. Validators are aligned through V-Trust, earning higher dividends by maintaining strict consensus on what constitutes a "high-fidelity" settlement.
 
 ---
 
 ## 3. Mechanisms to Discourage Low-Quality or Adversarial Behavior
-NASH employs a multi-layered defense strategy to protect the metagraph:
-
-* **Latent Sampling (Anti-Hallucination):** Validators stochastically probe the "Surface of Agreement." If a miner "hallucinates" utility values beyond what the agent revealed, the **Fidelity Score** is slashed.
-* **Partial Revelation Boundary:** Miners are only scored on revealed intent. Any attempt to "guess" or "probe" an agent's hidden **Internal Utility Curve** results in a mismatch with the validator’s audit, rendering the submission unprofitable.
-* **Logarithmic Buffer:** The inclusion of $\ln(\text{Packet Size})$ in the denominator prevents "speed-spamming," where miners send empty or low-intelligence packets to artificially lower their latency score.
-* **Pareto Audits:** If a validator finds a more optimal equilibrium point on the revealed manifold than the miner, the **Significance** weight is reduced, penalizing the miner for sub-optimal settlement.
+* **The Fidelity Slash:** Any miner submitting a mathematically impossible or "hallucinated" equilibrium suffers an immediate, non-linear decay of their **TWF** multiplier. This forces them to spend weeks re-earning the network's trust.
+* **Anti-Sybil PMU Decay:** If multiple keys are used to submit identical solutions for the same task, the PMU score for that specific task collapses, rendering the Sybil attack cost-prohibitive.
+* **Complexity Buffering:** Simple tasks are subject to a "Saturation Cap." This prevents high-performance miners from "bullying" the network by only solving easy tasks, as their rewards will eventually hit a ceiling that only complex, marginal utility tasks can break.
 
 ---
 
 ## 4. Proof of Intelligence and Proof of Effort
-NASH represents a genuine advancement in Bittensor's utility by requiring both high-level cognitive synthesis and physical computational work:
-
-* **Proof of Intelligence:** Mapping N-dimensional, non-linear agent preferences into a compact 3D manifold is a complex dimensionality reduction task. Resolving these manifolds into a stable Nash Equilibrium requires sophisticated gradient descent and game-theoretic reasoning that cannot be pre-calculated.
-* **Proof of Effort:** To hit sub-50ms TWF targets, miners must expend significant "effort" in optimizing CUDA kernels and maintaining high-bandwidth hardware. The energy required to solve these manifolds at scale grounds the value of the token in real-world resource expenditure.
+* **Proof of Intelligence:** Finding a Nash Equilibrium in a multi-modal, multi-currency environment is an **NP-hard** problem. It requires the miner to synthesize disparate economic intents into a single, unified settlement manifold. This cannot be solved with brute-force compute; it requires a sophisticated understanding of game theory and economic heuristic modeling.
+* **Proof of Effort:** Maintaining a top-tier **TWF** score requires relentless infrastructure maintenance and 24/7 connectivity. Because the scoring includes a **Latency Penalty**, miners must exert significant "effort" in optimizing their network stacks to ensure their intelligence is delivered in real-time.
 
 ---
 
-## 5. High-Level Algorithm
-The NASH operational cycle follows a precise, five-step pipeline:
+## 5. High-Level Algorithm: The PoEF Pipeline
+The NASH subnet operates on a continuous, high-frequency cycle:
 
-1.  **Task Assignment:** Validators broadcast a **Settlement Request** containing masked "Intent Vectors" from two or more agents.
-2.  **Submission:** Miners generate the **Surface of Agreement** (Manifold) and identify the **Equilibrium Coordinate**. They submit a compact, hashed bitstream to the metagraph.
-3.  **Validation (The Audit):** * Validators perform **Latent Sampling** on the manifold surface to ensure structural honesty.
-    * Validators perform a **Pareto Audit** to ensure the proposed coordinate is the most optimal agreement point.
-4.  **Scoring:** The **Time-Weighted Fidelity (TWF)** filter is applied, calculating the $R$ score based on the millisecond-precision timestamp of the submission.
-5.  **Reward Allocation:** Scores are aggregated via Yuma Consensus. Emissions are distributed to miners and validators based on their verified contribution to the network's "Settlement Throughput."
+1.  **Task Assignment:** The Validator generates an **Economic Challenge Pair** (Buyer Intent vs. Seller Intent) with specific utility constraints and broadcasts it to the metagraph.
+2.  **Equilibrium Proposal (Submission):** Miners ingest the intent data and utilize local game-theoretic models to generate a **Trade Manifold**. They submit their proposed equilibrium along with a cryptographic "Proof-of-Computation."
+3.  **The Pareto Audit (Validation):** The Validator checks the submission against the **Pareto Frontier**. If a proposal is found to be mathematically inefficient compared to the validator’s own baseline or the best-performing miner's solution, it is discarded.
+4.  **NER Scoring:** The Validator calculates the **Nash Efficiency Ratio ($R$)** based on accuracy, latency, and the PMU/TWF multipliers.
+5.  **Reward Allocation:** Scores are normalized across the epoch and submitted to the Subtensor. Emissions are then distributed via Yuma Consensus to the miners based on their final $S$ score ($S = (R \times PMU) \times TWF$).

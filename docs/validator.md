@@ -1,26 +1,37 @@
-# Nash Subnet: Validator Design
+# NASH Validator Design: The Economic Auditor
 
-### Scoring and Evaluation Methodology
-The Nash Validator employs a multi-stage, asymmetric evaluation process to ensure that miners are providing genuine "Economic Intelligence" rather than static or cached data.
+## 1. Scoring and Evaluation Methodology
+The NASH Validator is responsible for auditing the mathematical truth of the "Economic Molt." Evaluation is centered on the **Nash Efficiency Ratio ($R$)**—a multi-mechanism scoring approach designed to ensure miners are providing genuine, non-hallucinated utility.
 
-1.  **Fidelity Audit (Latent Sampling):** Instead of evaluating the entire manifold (which is computationally prohibitive), validators perform stochastic probes at random coordinates $(x, y, z)$. They compare the miner's reported utility value against the "Ground Truth" calculated locally by the validator. The accuracy score ($S_a$) is derived using Mean Squared Error (MSE):
-    $$S_a = 1 - \text{min}(1, \frac{MSE}{\text{threshold}})$$
-2.  **Optimality Verification:** Validators run a high-precision gradient descent pass to identify the true global Nash Equilibrium for a given manifold pair. They then measure the "Optimality Gap" ($G_o$)—the distance between the miner's proposed coordinate and the validator's ground-truth coordinate. 
-3.  **Efficiency Scoring:** To prevent "lazy mining," validators incorporate a time-decay multiplier ($T$). Responses that arrive earlier in the block cycle receive a higher weight, ensuring the network remains capable of instant settlement.
+### The Fidelity Audit (Latent Sampling)
+To prevent miners from submitting "hallucinated" or non-functional manifolds, validators perform **Latent Sampling**. 
+* **Mechanism:** The validator stochastically probes the miner's submitted manifold at random coordinates within the preference space. 
+* **Validation:** If the miner's reported utility value at coordinate $(x, y)$ deviates from the validator's local high-precision ground truth model, the **Fidelity Score** is penalized. This ensures the manifold is a mathematically honest representation of agent intent.
 
-The final weight $W$ set on-chain for a miner is a moving average of these components:
-$$W_{t+1} = (1 - \rho)W_t + \rho(\text{Fidelity} \times \text{Optimality} \times \text{Speed})$$
+### The Pareto Audit (Equilibrium Verification)
+Validators verify the optimality of the proposed **Equilibrium Coordinate**.
+* **Mechanism:** The validator runs a local, high-precision solver (e.g., Gradient-Play Dynamics) to check if a superior point of agreement exists. 
+* **The "Optimality Gap":** If the validator finds a coordinate that yields higher mutual utility than the miner's submission, the miner's **Significance** weight is reduced, reflecting a failure in "Equilibrium Discovery."
 
-### Evaluation Cadence
-The validation cycle is synchronized with the Bittensor block clock to ensure network-wide consistency:
+### Scoring Formula: Time-Weighted Fidelity (TWF)
+The final weight assigned to a miner is determined by the TWF-adjusted ratio:
+$$R = \frac{\text{Fidelity Score} \times \text{Significance}}{\ln(\text{Packet Size}) + \text{Latency (ms)}}$$
 
-* **Step-Level (Every Block ~12s):** Validators broadcast RFEs (Requests for Equilibrium) to a randomized subset of the metagraph to ensure constant coverage without overwhelming network bandwidth.
-* **Epoch-Level (Every 360 Blocks / 1 Tempo):** Validators aggregate their internal scores, normalize them across the current active miner set, and submit the final weight vector to the Subtensor blockchain.
-* **Sync-Level:** Validators continuously synchronize their local metagraph state to track new registrations and deregistered UIDs, ensuring that only "Immune" and "Top-Performing" miners are evaluated for rewards.
+---
 
-### Validator Incentive Alignment
-Nash aligns validator incentives with the health of the broader ecosystem through three pillars:
+## 2. Evaluation Cadence
+The NASH validator operates on two distinct temporal scales to balance network security with computational efficiency:
 
-1.  **VTrust (Validator Trust):** Under Yuma Consensus, validators earn rewards (Dividends) based on how well their weight assignments align with the stake-weighted majority. This discourages "lonely" or idiosyncratic scoring and forces validators to be mathematically objective.
-2.  **Market-Maker Rewards:** Validators act as the primary gateways for external agents to access the subnet. By providing high-fidelity validation, they increase the "Utility Value" of the Nash subnet, which attracts more delegated stake from TAO holders and increases the validator's own emission share.
-3.  **Anti-Plagiarism Checks:** Validators are incentivized to use unique, randomized entropy seeds in their challenges. If a validator uses predictable tasks, they risk their miners being "copied" by others, which lowers the consensus score and reduces the validator's performance metrics.
+* **The Forward Pass (Every Block - 12s):**
+  Validators broadcast **"Synthetic Challenges"**—hypothetical trade scenarios—to a random subset of UIDs. These challenges test the miners' ability to resolve complex, multi-variable manifolds under strict time pressure.
+* **The Weight Update (Every Tempo - 360 Blocks):**
+  Raw $R$ scores are aggregated into a **Moving Average**. Every 360 blocks (approximately 72 minutes), the validator submits the updated weight vector to the Subtensor blockchain. This prevents transient network spikes from unfairly penalizing high-performing miners.
+
+---
+
+## 3. Validator Incentive Alignment
+Under **Yuma Consensus (YC)** and **Dynamic TAO (dTAO)**, NASH validators are incentivized as "Honest Auditors":
+
+* **Consensus Trust:** Validators earn **Dividends** by aligning their scores with the "Consensus" of other high-stake validators. If a validator attempts to favor a specific miner (collusion), their scores will deviate from the collective ground truth, leading to a loss in dividends.
+* **Alpha Appreciation:** The value of the NASH "Alpha" token is tied to the utility of the subnet. Validators are financially motivated to only reward the most efficient settlement miners, as rewarding "slow" or "dishonest" miners devalues the validator's own staked Alpha.
+* **Anti-Weight Copying:** With the complexity of **PoEF** (Proof of Economic Fidelity) math, copying another validator’s weights without performing the underlying latent sampling leads to systemic "Vibe-Mismatches" detectable by the consensus mechanism.

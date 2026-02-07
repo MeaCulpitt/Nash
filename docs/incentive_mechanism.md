@@ -1,40 +1,44 @@
-# Nash: Incentive & Mechanism Design
+# NASH Incentive & Mechanism Design: Proof of Economic Fidelity (PoEF)
 
-### Emission and Reward Logic
-The Nash Subnet utilizes a dual-objective emission model designed to maximize both **Economic Fidelity** and **Discovery Speed**. Total emissions ($E$) allocated to the subnet are distributed based on a miner’s ability to minimize the "Utility Gap"—the difference between an agent's raw intent and the manifold's compressed representation.
+## 1. Emission and Reward Logic
+The NASH emission schedule is governed by the **Nash Efficiency Ratio ($R$)**, a multi-variable scoring metric that prioritizes mathematical precision and operational speed. Rewards are distributed through the Yuma Consensus, focusing on two primary performance vectors:
 
-* **Fidelity Score ($S_f$):** Accounts for 60% of the reward. It measures how accurately the miner’s manifold represents the agent's complex utility function.
-* **Equilibrium Efficiency ($S_e$):** Accounts for 40% of the reward. It measures the speed and precision with which a miner identifies the Pareto-optimal intersection between two manifolds.
+* **Compression Fidelity (60% weight):** Miners are rewarded for the structural integrity of the manifolds they generate. This ensures that complex agentic intent is mapped to geometric topology without information loss.
+* **Equilibrium Resolution (40% weight):** Miners earn rewards based on their ability to find the optimal Nash Equilibrium—the coordinate where all participating agents achieve their maximum mutual utility.
 
-The final reward $R$ for a miner is calculated as:
-$$R = \alpha(S_f) + \beta(S_e) - \text{Latency Penalty}$$
-where $\alpha$ and $\beta$ are weights adjusted by the validator network to prioritize accuracy or throughput based on current market demand.
+### Time-Weighted Fidelity (TWF)
+To drive the "Economic Molt," NASH implements **Time-Weighted Fidelity**. This logic ensures that the value of an economic settlement decays exponentially as latency increases. The protocol targets a **50ms "Gold Standard"** for settlement.
+The scoring formula is defined as:
+$$R = \frac{\text{Fidelity Score} \times \text{Significance}}{\ln(\text{Packet Size}) + \text{Latency (ms)}}$$
 
-### Incentive Alignment for Miners and Validators
-The Nash mechanism creates a symbiotic "Check-and-Balance" relationship:
+## 2. Incentive Alignment for Miners and Validators
+The mechanism creates a symbiotic relationship where both parties are incentivized to maintain the "Truth of the Manifold":
 
-* **Miners:** Incentivized to invest in high-performance Hypernetworks. Because the "Utility Surface" is high-dimensional, miners who use more sophisticated AI models to find better "deal coordinates" (Equilibria) earn exponentially higher rewards than those providing sub-optimal solutions.
-* **Validators:** Incentivized to be rigorous auditors. Validators earn dividends by correctly ranking miners. If a validator accepts a low-fidelity manifold that is later "challenged" by the network, the validator’s weight-setting authority (and thus their earnings) is reduced via the Yuma Consensus mechanism.
+* **Miners:** Incentivized to invest in high-compute hardware (GPUs/TPUs) capable of running intensive gradient descent for equilibrium solving. High fidelity and low latency directly maximize their $R$ score, and consequently, their TAO emissions.
+* **Validators:** Act as **Market Auditors**. They are incentivized to maintain high-precision "Ground Truth" models to accurately sample and penalize dishonest miners. Under Dynamic TAO (dTAO), validators who accurately identify the most efficient settlement miners attract more stake from the community.
 
-### Mechanisms to Discourage Low-Quality or Adversarial Behavior
-Nash implements three layers of defense against bad actors:
-1.  **Latent Sampling:** Validators do not check the whole manifold (which is computationally expensive). Instead, they perform "stochastic probes" at random coordinates. If the miner's manifold value at a probe point deviates from the ground truth by $> \epsilon$, the entire submission is discarded.
-2.  **Commit-Reveal Cycles:** To prevent "Miner Plagiarism" (where one miner copies another’s manifold), miners must submit a hash of their solution before revealing the full data.
-3.  **Collusion Slashing:** If a validator consistently favors a specific set of miners regardless of their mathematical accuracy, the anomalous weight distribution is flagged by other validators, leading to a "Consensus Penalty" that diverts emissions away from the colluding cluster.
+## 3. Mechanisms to Discourage Adversarial Behavior
+NASH utilizes four distinct layers of defense to protect the integrity of the settlement layer:
 
-### Proof of Intelligence and Proof of Effort
-Nash qualifies as a **Genuine Proof of Intelligence** because the task—compressing high-dimensional economic intent into a 3D manifold—cannot be solved by brute force. It requires a "world model" of utility. 
-* **Proof of Intelligence:** Miners must use neural architectures to generalize an agent's preferences across unseen coordinates. This is a task of synthesis and prediction, not just computation.
-* **Proof of Effort:** The high-frequency nature of the "Equilibrium Race" requires miners to maintain 99.9% uptime and low-latency hardware. The computational cost of running gradient descent to find the Pareto-frontier acts as a physical stake in the network’s success.
+* **Latent Sampling (Anti-Hallucination):** Validators stochastically probe the miner's manifold at random coordinates. If the miner's reported utility deviates from the validator's ground truth, the **Fidelity Score** is slashed, rendering the submission unprofitable.
+* **Pareto Audits (Anti-Laziness):** Validators verify the proposed Equilibrium by running high-precision solvers. If a more optimal coordinate exists (the "Optimality Gap"), the miner is penalized for providing a "good enough" rather than "mathematically best" settlement.
+* **Cryptographic Commitment (Anti-Plagiarism):** To prevent "weight-copying," miners must submit a hashed commitment of their manifold before revealing the full data. This ensures miners cannot simply copy the top-performing manifold in a block.
+* **Logarithmic Packet Buffering:** By including $\ln(\text{Packet Size})$ in the denominator, the system discourages "speed-spamming," where miners send empty packets to game the latency metric.
 
-### High-Level Algorithm: The Nash Cycle
-The following cycle occurs within the timeframe of a few blocks:
+## 4. Proof of Intelligence vs. Proof of Effort
+NASH represents a genuine **Proof of Intelligence** because it requires solving non-trivial mathematical problems that cannot be "brute-forced" or pre-calculated:
 
-1.  **Task Assignment:** The Validator broadcasts a "Request for Equilibrium" (RFE) containing two distinct sets of raw agent requirements (e.g., Buyer A vs. Seller B).
-2.  **Submission:** Miners process the RFE through their local models, generating a compact Manifold and a proposed Equilibrium Coordinate. They submit a `Commit` hash to the chain.
-3.  **Validation:** Once the `Reveal` phase begins, Validators pull the full manifold data. They run **Latent Sampling** to verify fidelity and **Gradient Descent** to ensure the proposed coordinate is a true Nash Equilibrium.
-4.  **Scoring:** The Validator assigns a score based on the **Nash Efficiency Ratio**:
-    * *Accuracy:* How close is the manifold to the ground truth?
-    * *Optimality:* Is there a better deal coordinate the miner missed?
-    * *Latency:* How fast was the response?
-5.  **Reward Allocation:** Scores are aggregated via Yuma Consensus, and TAO emissions are distributed to the miners' hotkeys proportionally to their performance.
+* **Dimensionality Reduction:** Mapping N-dimensional agent preferences into a compact manifold requires high-level cognitive synthesis and structural understanding.
+* **Non-Linear Optimization:** Finding the Nash Equilibrium in a dynamic, overlapping manifold environment requires sophisticated gradient descent and game-theoretic reasoning.
+* **Proof of Effort:** The sheer compute required to generate high-fidelity manifolds at sub-100ms speeds ensures that miners are expending significant physical and computational energy, grounding the token's value in real-world resource expenditure.
+
+## 5. High-Level Algorithm
+The NASH operational cycle follows a precise, asynchronous pipeline:
+
+1.  **Task Assignment:** Validators broadcast a "Settlement Request" containing raw intent data from two or more agents.
+2.  **Submission:** Miners generate the **Manifold Geometry** and identify the **Equilibrium Coordinate**. They submit a compact bitstream representation to the metagraph.
+3.  **Validation (The Audit):**
+    * **Fidelity Check:** Validators sample the manifold's surface to ensure geometric honesty.
+    * **Pareto Audit:** Validators confirm the Equilibrium's optimality using the Nash Efficiency Ratio.
+4.  **Scoring:** The **Time-Weighted Fidelity (TWF)** logic is applied, calculating the final $R$ score based on the submission's accuracy and the exact millisecond it was received.
+5.  **Reward Allocation:** Scores are aggregated via Yuma Consensus. Emissions are distributed to miners and validators based on their contribution to the network’s total "Settlement Throughput."

@@ -1,44 +1,51 @@
-# NASH Incentive & Mechanism Design: Proof of Economic Fidelity (PoEF)
+# Incentive & Mechanism Design: Proof of Economic Fidelity (PoEF)
 
 ## 1. Emission and Reward Logic
-The NASH emission schedule is governed by the **Nash Efficiency Ratio ($R$)**, a multi-variable scoring metric that prioritizes mathematical precision and operational speed. Rewards are distributed through the Yuma Consensus, focusing on two primary performance vectors:
+The NASH emission schedule is governed by **Proof of Economic Fidelity (PoEF)**, a mechanism that prioritizes the high-speed resolution of complex economic intent. Emissions are distributed via the Yuma Consensus, utilizing the **Nash Efficiency Ratio ($R$)** as the primary scoring metric:
 
-* **Compression Fidelity (60% weight):** Miners are rewarded for the structural integrity of the manifolds they generate. This ensures that complex agentic intent is mapped to geometric topology without information loss.
-* **Equilibrium Resolution (40% weight):** Miners earn rewards based on their ability to find the optimal Nash Equilibrium—the coordinate where all participating agents achieve their maximum mutual utility.
-
-### Time-Weighted Fidelity (TWF)
-To drive the "Economic Molt," NASH implements **Time-Weighted Fidelity**. This logic ensures that the value of an economic settlement decays exponentially as latency increases. The protocol targets a **50ms "Gold Standard"** for settlement.
-The scoring formula is defined as:
 $$R = \frac{\text{Fidelity Score} \times \text{Significance}}{\ln(\text{Packet Size}) + \text{Latency (ms)}}$$
 
+### Reward Weighting
+* **Structural Fidelity (60%):** Rewards miners for the geometric accuracy of the "Surface of Agreement." This ensures the manifold is a truthful representation of the agent's revealed intent.
+* **Equilibrium Resolution (40%):** Rewards miners for identifying the optimal coordinate where counter-party manifolds intersect.
+
+### Time-Weighted Fidelity (TWF)
+To drive the "Economic Molt," NASH enforces a **50ms Gold Standard**. The TWF logic applies a continuous decay to the reward based on latency. While accuracy is paramount, a high-fidelity manifold resolved in 500ms is economically inferior to a slightly less complex one resolved in 50ms, as machine-speed liquidity is the subnet's core product.
+
+---
+
 ## 2. Incentive Alignment for Miners and Validators
-The mechanism creates a symbiotic relationship where both parties are incentivized to maintain the "Truth of the Manifold":
+NASH creates a symbiotic loop where both participants are financially motivated to maintain a high-integrity settlement layer:
 
-* **Miners:** Incentivized to invest in high-compute hardware (GPUs/TPUs) capable of running intensive gradient descent for equilibrium solving. High fidelity and low latency directly maximize their $R$ score, and consequently, their TAO emissions.
-* **Validators:** Act as **Market Auditors**. They are incentivized to maintain high-precision "Ground Truth" models to accurately sample and penalize dishonest miners. Under Dynamic TAO (dTAO), validators who accurately identify the most efficient settlement miners attract more stake from the community.
+* **Miners:** Incentivized to optimize both their AI models (for fidelity) and their hardware stacks (for latency). High performance directly translates to higher $R$ scores and increased TAO emissions.
+* **Validators:** Act as **Economic Auditors**. Under Dynamic TAO (dTAO), validators earn dividends by accurately identifying top-tier miners. They are incentivized to maintain high-precision ground-truth models to distinguish between genuine "Economic Intelligence" and low-effort approximations.
 
-## 3. Mechanisms to Discourage Adversarial Behavior
-NASH utilizes four distinct layers of defense to protect the integrity of the settlement layer:
+---
 
-* **Latent Sampling (Anti-Hallucination):** Validators stochastically probe the miner's manifold at random coordinates. If the miner's reported utility deviates from the validator's ground truth, the **Fidelity Score** is slashed, rendering the submission unprofitable.
-* **Pareto Audits (Anti-Laziness):** Validators verify the proposed Equilibrium by running high-precision solvers. If a more optimal coordinate exists (the "Optimality Gap"), the miner is penalized for providing a "good enough" rather than "mathematically best" settlement.
-* **Cryptographic Commitment (Anti-Plagiarism):** To prevent "weight-copying," miners must submit a hashed commitment of their manifold before revealing the full data. This ensures miners cannot simply copy the top-performing manifold in a block.
-* **Logarithmic Packet Buffering:** By including $\ln(\text{Packet Size})$ in the denominator, the system discourages "speed-spamming," where miners send empty packets to game the latency metric.
+## 3. Mechanisms to Discourage Low-Quality or Adversarial Behavior
+NASH employs a multi-layered defense strategy to protect the metagraph:
 
-## 4. Proof of Intelligence vs. Proof of Effort
-NASH represents a genuine **Proof of Intelligence** because it requires solving non-trivial mathematical problems that cannot be "brute-forced" or pre-calculated:
+* **Latent Sampling (Anti-Hallucination):** Validators stochastically probe the "Surface of Agreement." If a miner "hallucinates" utility values beyond what the agent revealed, the **Fidelity Score** is slashed.
+* **Partial Revelation Boundary:** Miners are only scored on revealed intent. Any attempt to "guess" or "probe" an agent's hidden **Internal Utility Curve** results in a mismatch with the validator’s audit, rendering the submission unprofitable.
+* **Logarithmic Buffer:** The inclusion of $\ln(\text{Packet Size})$ in the denominator prevents "speed-spamming," where miners send empty or low-intelligence packets to artificially lower their latency score.
+* **Pareto Audits:** If a validator finds a more optimal equilibrium point on the revealed manifold than the miner, the **Significance** weight is reduced, penalizing the miner for sub-optimal settlement.
 
-* **Dimensionality Reduction:** Mapping N-dimensional agent preferences into a compact manifold requires high-level cognitive synthesis and structural understanding.
-* **Non-Linear Optimization:** Finding the Nash Equilibrium in a dynamic, overlapping manifold environment requires sophisticated gradient descent and game-theoretic reasoning.
-* **Proof of Effort:** The sheer compute required to generate high-fidelity manifolds at sub-100ms speeds ensures that miners are expending significant physical and computational energy, grounding the token's value in real-world resource expenditure.
+---
+
+## 4. Proof of Intelligence and Proof of Effort
+NASH represents a genuine advancement in Bittensor's utility by requiring both high-level cognitive synthesis and physical computational work:
+
+* **Proof of Intelligence:** Mapping N-dimensional, non-linear agent preferences into a compact 3D manifold is a complex dimensionality reduction task. Resolving these manifolds into a stable Nash Equilibrium requires sophisticated gradient descent and game-theoretic reasoning that cannot be pre-calculated.
+* **Proof of Effort:** To hit sub-50ms TWF targets, miners must expend significant "effort" in optimizing CUDA kernels and maintaining high-bandwidth hardware. The energy required to solve these manifolds at scale grounds the value of the token in real-world resource expenditure.
+
+---
 
 ## 5. High-Level Algorithm
-The NASH operational cycle follows a precise, asynchronous pipeline:
+The NASH operational cycle follows a precise, five-step pipeline:
 
-1.  **Task Assignment:** Validators broadcast a "Settlement Request" containing raw intent data from two or more agents.
-2.  **Submission:** Miners generate the **Manifold Geometry** and identify the **Equilibrium Coordinate**. They submit a compact bitstream representation to the metagraph.
-3.  **Validation (The Audit):**
-    * **Fidelity Check:** Validators sample the manifold's surface to ensure geometric honesty.
-    * **Pareto Audit:** Validators confirm the Equilibrium's optimality using the Nash Efficiency Ratio.
-4.  **Scoring:** The **Time-Weighted Fidelity (TWF)** logic is applied, calculating the final $R$ score based on the submission's accuracy and the exact millisecond it was received.
-5.  **Reward Allocation:** Scores are aggregated via Yuma Consensus. Emissions are distributed to miners and validators based on their contribution to the network’s total "Settlement Throughput."
+1.  **Task Assignment:** Validators broadcast a **Settlement Request** containing masked "Intent Vectors" from two or more agents.
+2.  **Submission:** Miners generate the **Surface of Agreement** (Manifold) and identify the **Equilibrium Coordinate**. They submit a compact, hashed bitstream to the metagraph.
+3.  **Validation (The Audit):** * Validators perform **Latent Sampling** on the manifold surface to ensure structural honesty.
+    * Validators perform a **Pareto Audit** to ensure the proposed coordinate is the most optimal agreement point.
+4.  **Scoring:** The **Time-Weighted Fidelity (TWF)** filter is applied, calculating the $R$ score based on the millisecond-precision timestamp of the submission.
+5.  **Reward Allocation:** Scores are aggregated via Yuma Consensus. Emissions are distributed to miners and validators based on their verified contribution to the network's "Settlement Throughput."

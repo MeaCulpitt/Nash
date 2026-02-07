@@ -1,22 +1,39 @@
-# Nash: The Compression Layer for Economic Intent
+# NASH: The Global Settlement Layer for the Agentic Web
 
-Nash is a Bittensor subnetwork designed to collapse multi-turn agentic negotiations into millisecond-scale mathematical transactions. By using **Nash Manifolds**, agents can settle complex, multi-variable trades (price, latency, compute specs) in a single one-shot exchange.
+![NASH Banner](https://raw.githubusercontent.com/MeaCulpitt/Nash/main/docs/assets/banner.png)
 
-## Project Structure
-* `neurons/`: Implementation of Miner and Validator scripts.
-* `nash/`: Core logic for Nash Manifold generation and Pareto verification.
-* `docs/`: Detailed design proposals and strategy.
-* `protocol.py`: The Synapse protocol defining communication between nodes.
+NASH is a decentralized Bittensor subnetwork designed to collapse slow, multi-turn agentic negotiations into millisecond-scale mathematical transactions. By utilizing **Nash Manifolds**, the protocol enables autonomous agents to settle complex economic intent with zero information loss and near-zero latency.
 
-## Quick Documentation
-- [Business Logic & Market Rationale](docs/business_logic.md)
-- [Incentive & Mechanism Design](docs/incentive_mechanism.md)
-- [Miner Design](docs/miner.md)
-- [Validator Design](docs/validator.md)
-- [Go-To-Market Strategy](docs/gtm.md)
+## 🌀 The Economic Molt
+In the emerging agentic economy, human-speed negotiation is a failure point. NASH provides the infrastructure for agents to "shed the shell" of legacy financial rails. Instead of exchanging JSON-RPC messages, agents on NASH exchange geometric intent, resolving overlapping manifolds into a stable **Nash Equilibrium** at machine-speed.
 
-## Installation
-```bash
-git clone [https://github.com/your-username/nash-subnet.git](https://github.com/your-username/nash-subnet.git)
-cd nash-subnet
-pip install -e .
+---
+
+## 📚 Technical Documentation
+
+Explore the core components of the NASH protocol:
+
+### 💼 [Business Logic & Market Rationale](./docs/business_logic.md)
+* **The Problem:** Solving the "Dialogue Bottleneck" in machine-to-machine trade.
+* **The Moat:** Why geometric settlement is superior to centralized AI orchestrators.
+* **The Vision:** Positioning NASH as the horizontal monetization layer for the entire Bittensor metagraph.
+
+### 📈 [Incentive & Mechanism Design](./docs/incentive_mechanism.md)
+* **Proof of Economic Fidelity (PoEF):** Our unique consensus mechanism that rewards structural accuracy and speed.
+* **Time-Weighted Fidelity (TWF):** A reward-decay logic that enforces a 50ms "Gold Standard" for all settlements.
+* **Dynamic TAO Integration:** How NASH aligns miner/validator incentives through dTAO.
+
+### ⛏️ [Miner Design & Requirements](./docs/miner_design.md)
+* **Tasks:** Intent Encoding (Manifold Generation) and Equilibrium Discovery.
+* **Performance:** Detailed benchmarks for hitting sub-100ms TWF targets using high-bandwidth memory (HBM3).
+* **Input/Output:** Specification for the high-density binary serialization format used in NASH Synapses.
+
+### 🛡️ [Validator Design & Auditing](./docs/validator_design.md)
+* **Scoring:** Detail on Latent Sampling and Pareto Audits to ensure "Proof of Intelligence."
+* **Anti-Adversarial Logic:** Mechanisms to prevent weight-copying and manifold hallucination.
+* **Cadence:** The block-by-block synthetic challenge cycle and tempo-based weight updates.
+
+### 🚀 [Go-To-Market Strategy](./docs/go_to_market.md)
+* **Anchor Subnets:** Integration plans for SN62 (Ridges), SN27 (Nodexo), and SN64 (Chutes).
+* **Growth:** Utilizing the NASH SDK to create a developer-led integration flywheel.
+* **Bootstrapping:** Early-participation multipliers for the first wave of "Molt" miners.

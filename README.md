@@ -1,7 +1,5 @@
 # NASH: The Global Settlement Layer for the Agentic Web
 
-![NASH Banner](https://raw.githubusercontent.com/MeaCulpitt/Nash/main/docs/assets/banner.png)
-
 NASH is a decentralized Bittensor subnetwork designed to collapse slow, multi-turn agentic negotiations into millisecond-scale mathematical transactions. By utilizing **Nash Manifolds** and **Partial Intent Revelation**, the protocol enables autonomous agents to settle complex economic intent with zero information loss, near-zero latency, and absolute privacy.
 
 ## 🌀 The Economic Molt

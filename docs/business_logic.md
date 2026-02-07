@@ -20,9 +20,9 @@ In the current global economy, trillions of dollars in trade value are lost to *
 
 ## 3. Why Bittensor? The Multi-Synapse Advantage
 The "Global Trade Problem" is uniquely suited to the Bittensor architecture for three reasons:
-* **The Competitive Intelligence Flywheel:** To find a Nash Equilibrium in real-time, you need 256+ miners constantly competing to find the "Alpha." Centralized systems are static; Bittensor is evolutionary.
+* **The Competitive Intelligence Flywheel:** To find a Nash Equilibrium in real-time, you need 256+ miners constantly competing to find the predictive edge. Centralized systems are static; Bittensor is evolutionary.
 * **Proof of Marginal Utility (PMU):** NASH leverages Bittensor’s ability to reward the "Hardest" problems. This ensures the network doesn't just solve the easy trades but pushes into the complex, high-value "Structural Gaps" of the global economy.
-* **Trustless Settlement via dTAO:** By using the 2026 dTAO framework, NASH allows for cross-border economic settlement without a central bank, using the subnet's own Alpha token as the reputation-collateral for the trades.
+* **Trustless Settlement via dTAO:** By using the 2026 dTAO framework, NASH allows for cross-border economic settlement without a central bank, using the subnet's own alpha token as the reputation-collateral for the trades.
 
 
 
@@ -37,7 +37,7 @@ As the **Time-Weighted Fidelity (TWF)** of the miners reaches institutional grad
 
 ### Phase 3: Sustainable Business Model
 Sustainability is achieved through the **Equilibrium Fee Model**:
-* **The "Spread" Capture:** A micro-fraction of the value unlocked by a successful match is used to buy back and burn the NASH Alpha token, creating deflationary pressure.
+* **The "Spread" Capture:** A micro-fraction of the value unlocked by a successful match is used to buy back and burn the NASH alpha token, creating deflationary pressure.
 * **API Access:** Enterprises pay for "Priority Inference," where their trade requests are handled by the highest-TWF miners with sub-50ms latency.
 
 

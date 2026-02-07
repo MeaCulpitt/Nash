@@ -1,31 +1,46 @@
-# Nash Subnet: Miner Design
+# NASH Miner Design: High-Fidelity Manifold Generation
 
-### Miner Tasks
-The primary objective of a Nash Miner is to transform raw, high-dimensional agent intent into a compressed, mathematically resolvable **Manifold**. Miners act as the "Economic Architects" of the subnet, performing two distinct computational tasks:
+## 1. Miner Tasks
+The NASH miner acts as the computational engine of the "Economic Molt," transforming abstract agentic intent into actionable mathematical geometry. The mining process is split into two high-performance execution phases:
 
-1.  **Utility Compression (Manifold Generation):** Miners receive a set of multi-variable requirements (e.g., price caps, latency thresholds, hardware specs). They must use a specialized Hypernetwork to map these variables into a continuous latent space, creating a 3D "topographical map" of the agent’s preferences.
-2.  **Equilibrium Solving (Optimization):** When presented with two competing manifolds (e.g., a buyer and a seller), miners must perform high-speed gradient descent to find the **Nash Equilibrium**. This is the specific coordinate in the latent space that maximizes the mutual utility of both parties.
-3.  **Proof Generation:** Miners must produce a mathematical "witness" that their manifold is a faithful representation of the input data, protecting against validators' stochastic probes.
+### Phase I: Intent Encoding (Manifold Generation)
+Miners receive raw "Intent Vectors" from the validator. The task is to compress these high-dimensional agent requirements (price elasticity, quality thresholds, time constraints) into a compact **Nash Manifold**. Miners typically utilize Hypernetworks or Variational Autoencoders (VAEs) to ensure this dimensionality reduction occurs with zero information loss, representing the agent's utility function as a continuous geometric surface.
 
-### Expected Input → Output Format
-Nash Miners communicate via the `NashSynapse` protocol. The expected data flow is strictly typed to ensure millisecond-scale processing.
+### Phase II: Equilibrium Discovery (The Solve)
+Once manifolds are generated, the miner must find the "Overlapping Manifold"—the intersection of the buyer's and seller's preferences. The miner runs optimization algorithms (e.g., Gradient Descent or Bayesian Optimization) to identify the **Nash Equilibrium Coordinate**. This coordinate represents the unique point where both agents achieve maximum mutual utility, and neither can improve their outcome by deviating.
 
-* **Expected Input (from Validator):**
-    * `raw_intent_vector`: A normalized array of floats (0.0 to 1.0) representing agent constraints.
-    * `context_seed`: A unique entropy string used to anchor the manifold’s coordinate system for that specific block.
-    * `challenge_pair`: (Optional) A reference to a second agent’s manifold hash for competitive equilibrium discovery.
+---
 
-* **Expected Output (to Validator):**
-    * `manifold_coefficients`: A compressed bitstream (typically 256-512 bytes) representing the neural weights of the local utility surface.
-    * `equilibrium_coordinate`: A 3-tuple `(x, y, z)` proposing the optimal trade point.
-    * `fidelity_commitment`: A hash of the local ground-truth data used to prevent plagiarism during the commit-reveal cycle.
+## 2. Expected Input → Output Format
+To maintain sub-100ms compatibility, the NASH protocol utilizes a high-density binary serialization format for all I/O operations.
 
-### Performance Dimensions
-Validators rank miners across three critical axes. Excellence in one dimension cannot fully compensate for failure in another.
+### Expected Input (The Synapse)
+* **Intent Vector (`Tensor[N, D]`):** A raw representation of agent preferences and constraints.
+* **Context Header (`JSON/Bytes`):** Meta-constraints including transaction deadlines, clearinghouse requirements, and priority weights.
+* **Target Manifold ID:** The specific counter-party manifold to be resolved against.
 
-1.  **Quality (Economic Fidelity):**
-    * Measured by how well the manifold survives **Latent Sampling**. If a validator probes a coordinate and finds the miner’s manifold value differs from the ground-truth utility, the Quality score is penalized.
-2.  **Speed (Inference Latency):**
-    * Nash is a "High-Frequency Trading" layer. Miners are rewarded for the speed of their `forward()` pass. Responses arriving after the block threshold (approx. 12 seconds) are ignored, while those in the top 10% of speed receive a multiplier.
-3.  **Accuracy (Optimality Gap):**
-    * Validators calculate the "Global Peak" of the manifold pair. If a miner proposes an equilibrium coordinate that is significantly less efficient than the one calculated by the validator, the miner is flagged for low Accuracy (sub-optimal solving).
+### Expected Output (The Submission)
+* **Nash Manifold (`Compressed Tensor`):** A 128–512 byte representation of the agent's intent topology.
+* **Equilibrium Point (`Vector[D]`):** The final negotiated coordinates for the trade.
+* **Cryptographic Commitment:** A hash of the manifold to prevent plagiarism and weight-copying by other miners on the metagraph.
+
+---
+
+## 3. Performance Dimensions
+Miner performance is scored through the **Time-Weighted Fidelity (TWF)** lens, which balances technical accuracy with the ruthless speed required by the agentic economy.
+
+### Quality & Economic Fidelity
+Miners must ensure their generated manifolds are a precise reflection of the raw intent. 
+* **Metric:** Mean Squared Error (MSE). 
+* **Target:** MSE < 0.001. 
+* **Penalty:** Deviations in fidelity result in immediate slashing of the "Fidelity Score," making the submission ineligible for high-tier rewards.
+
+### Speed & Latency (The TWF Core)
+Speed is the primary denominator in the Nash Efficiency Ratio ($R$). 
+* **Gold Standard:** <50ms. 
+* **The Reward Cliff:** Due to TWF logic, rewards decay exponentially beyond the 100ms mark. This incentivizes miners to optimize CUDA kernels and utilize high-bandwidth memory (HBM3) to ensure the settlement happens at machine-speed.
+
+### Accuracy (Equilibrium Stability)
+The proposed Equilibrium must be stable. If a validator finds a more optimal coordinate (an "Optimality Gap"), the miner is penalized.
+* **Target:** Pareto Optimality. 
+* **Validation:** Validators utilize latent sampling to verify that the proposed point truly sits at the intersection of the submitted manifolds.

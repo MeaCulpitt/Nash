@@ -2,33 +2,33 @@
 
 ## 1. The Problem the Subnet Aims to Solve and Why it Matters
 
-The current AI economy suffers from the **"Dialogue Bottleneck."** When AI agents need to trade resources (e.g., Agent A buying GPU time from Agent B), they rely on legacy communication: slow, multi-turn LLM/JSON negotiations. This human-centric approach creates an $O(n^2)$ scaling problem with latencies often exceeding 2-5 seconds—latencies that are economically fatal for high-frequency agentic coordination.
+The current AI economy suffers from the **"Dialogue Bottleneck."** When AI agents need to trade resources, they rely on slow, multi-turn LLM/JSON negotiations. This creates an $O(n^2)$ scaling problem with latencies that are economically fatal for high-frequency coordination. Furthermore, traditional negotiation requires agents to reveal sensitive intent data to potentially adversarial counter-parties or centralized intermediaries.
 
 **Why it matters:**
-As we enter the "Economic Molt," agents are becoming sovereign economic actors. Without a high-speed settlement layer, the agentic internet remains a collection of isolated silos. NASH solves this by replacing slow "chat-based" negotiation with **Geometric Manifold Resolution**. By compressing intent into mathematical manifolds, NASH enables millisecond-scale settlement, allowing agents to coordinate at the true speed of silicon.
+NASH replaces "chat-based" negotiation with **Geometric Manifold Resolution**. This solves the latency crisis while introducing **Structural Privacy**. By compressing intent into mathematical manifolds, NASH enables millisecond-scale settlement without requiring agents to "show their full hand," ensuring that autonomous commerce remains sovereign and secure.
 
 ## 2. Competing Solutions: Internal and External
 
 ### Outside the Bittensor Ecosystem:
-* **Centralized AI Orchestrators:** Platforms like Salesforce Agentforce or Microsoft Copilot Studio attempt to solve coordination within "walled gardens." However, these create massive platform risk, opaque pricing, and centralized chokepoints that can throttle or censor agentic commerce.
-* **Legacy Protocols (REST/JSON-RPC):** While universal, these protocols are "intent-blind." They require rigid schemas that cannot handle the fluid, multi-variable preferences of autonomous agents, leading to high failure rates in complex trades.
+* **Centralized AI Orchestrators:** Platforms like Microsoft Copilot Studio attempt to solve coordination within "walled gardens." These create massive platform risk and require agents to upload their full utility functions to a central server, exposing them to front-running and data harvesting.
+* **Legacy Financial Protocols:** These are "intent-blind." They cannot handle the fluid, multi-variable preferences of agents, leading to high failure rates in complex, non-linear trades.
 
 ### Within the Bittensor Ecosystem:
-* **Direct Resource Subnets:** Subnets like SN27 (Nodexo) or SN64 (Chutes) provide the *commodities* (GPU/Inference), but they do not provide a native *negotiation* protocol.
-* **NASH’s Edge:** NASH does not compete with these subnets; it **completes** them. While others sell the "fuel," NASH provides the "market engine" that determines how that fuel is priced and traded trustlessly between agents.
+* **Direct Resource Subnets:** Subnets like SN27 or SN64 provide the "fuel" (compute/storage) but lack a native "market engine."
+* **NASH’s Edge (Partial Intent Revelation):** Unlike raw data exchanges, a NASH manifold only reveals the **Surface of Agreement**—the specific points where an agent is willing to trade. It keeps the **Internal Utility Curve** (reservation prices and private constraints) hidden within the high-dimensional latent space. NASH provides the market engine without the privacy leaks.
 
 ## 3. Why this Use Case is Well-Suited to a Bittensor Subnet
 
-Bittensor is the only global infrastructure that provides a native **Incentive-as-a-Service** layer, making it the perfect home for NASH for three reasons:
+Bittensor is the only infrastructure providing a native **Incentive-as-a-Service** layer, which is essential for mathematical trust:
 
-* **Decentralized Trust:** In a settlement layer, the "math must be the law." Bittensor’s Yuma Consensus allows NASH to verify that miners are finding true Nash Equilibriums without needing a central clearinghouse.
-* **The Alpha/TAO Economy:** With Dynamic TAO (dTAO), NASH can establish its own "Alpha" liquidity pool. This allows the subnet to act as a specialized financial hub where the token’s value is directly tied to the volume of agentic trade it settles.
-* **Cross-Subnet Synergies:** Being a subnet allows NASH to sit "horizontally" across the metagraph. It can consume proofs from SN2 (DSperse) for verification and route tasks to SN64 (Chutes) for execution, creating a unified economic nervous system.
+* **Decentralized Trust:** Yuma Consensus allows NASH to verify that miners are finding true Nash Equilibriums without a central clearinghouse.
+* **Dimensionality Reduction as Proof of Intelligence:** Mapping N-dimensional preferences into a compact 3D manifold is a non-trivial AI task. NASH leverages Bittensor's compute to perform this "Geometric Synthesis" at scale.
+* **The Alpha/TAO Economy:** Through Dynamic TAO (dTAO), NASH establishes a specialized financial hub where the token’s value is directly tied to the volume of agentic trade it settles.
 
 ## 4. Path to Long-Term Adoption and Sustainable Business
 
 NASH’s path to sustainability is built on the transition from **Incentive-driven growth** to **Utility-driven revenue**.
 
-* **Phase 1: The Bootstrapping (0-6 Months):** Use TAO emissions to attract high-compute miners. Establish the "Gold Standard" of 50ms settlement through the **Time-Weighted Fidelity (TWF)** mechanism.
-* **Phase 2: Ecosystem Integration (6-18 Months):** Onboard existing agentic subnets (e.g., SN62) to use the NASH manifolds for inter-agent payments. At this stage, "NASH-Certified" becomes a badge of efficiency for any agentic protocol.
-* **Phase 3: The Universal Settlement Layer (18+ Months):** Transition to a transaction-fee model where a micro-fraction of settled trades is burned or redistributed to stakers. As the volume of AI-to-AI commerce grows—projected to be a multi-billion dollar market by 2027—NASH becomes a foundational, rent-seeking utility for the entire AI internet.
+* **Phase 1: The Bootstrapping (0-6 Months):** Use TAO emissions to attract high-compute miners. Establish the 50ms "Gold Standard" through **Time-Weighted Fidelity (TWF)**.
+* **Phase 2: Sovereignty through Privacy (6-18 Months):** Market the "Partial Revelation" feature to enterprise agents who require privacy-preserving settlement. Position NASH as the only "Safe Harbor" for corporate AI commerce.
+* **Phase 3: The Universal Settlement Layer (18+ Months):** Transition to a transaction-fee model. As the volume of AI-to-AI commerce grows, NASH becomes the foundational, rent-seeking utility for the entire "Agentic Web," providing trustless, high-speed, and private economic coordination.

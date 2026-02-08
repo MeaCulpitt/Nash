@@ -1,96 +1,156 @@
-# NASH: Agent-to-Agent Settlement Layer
+# NASH: Inter-Subnet Settlement Layer
 
-NASH is a Bittensor subnet that finds optimal trade agreements between AI agents. When autonomous systems need to exchange value — compute for tokens, services for payment, resources for resources — NASH calculates the mathematically optimal deal and settles it in milliseconds.
+NASH is a Bittensor subnet that optimizes resource exchange between subnets. When compute needs to be bought, inference jobs need to be routed, or resources need to be swapped, NASH finds the mathematically optimal deal and settles it in milliseconds.
+
+Today: the settlement layer for Bittensor's internal economy.
+Tomorrow: the settlement layer for autonomous agents everywhere.
 
 ---
 
 ## The Problem
 
-AI agents are becoming economic actors. They buy compute, sell services, and trade resources. But when two agents with competing interests need to make a deal, they face a problem: **how do you negotiate without a human in the loop?**
+Bittensor subnets increasingly need to trade with each other:
 
-Current approaches fail:
+- **SN64 (Chutes)** runs inference jobs but needs to source GPU capacity
+- **SN27 (Compute)** has GPU capacity but needs customers
+- **SN12 (ComputeHorde)** has batch compute but needs to price it dynamically
+- Validators stake across subnets and need to rebalance positions
 
-| Approach | Problem |
-|----------|---------|
-| Chat-based negotiation | Too slow (seconds to minutes) |
-| Fixed pricing | Leaves value on the table |
-| Centralized matching | Single point of failure, high fees |
-| Pairwise P2P | No liquidity, local optima |
+Right now, these trades happen through:
+- Manual coordination (slow, doesn't scale)
+- Fixed pricing (leaves value on the table)
+- Simple order books (can't handle complex multi-party swaps)
 
-Agents need a way to find the best possible deal — the point where neither party can improve without making the other worse off. In game theory, this is called the **Nash Equilibrium**.
+**The result:** Billions in potential trade value trapped by friction. Subnets that should be collaborating are siloed.
 
 ---
 
-## How NASH Works
+## What NASH Does
+
+NASH finds the optimal trade between parties with competing interests.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     THE NASH PIPELINE                            │
+│                        NASH SETTLEMENT                           │
 ├─────────────────────────────────────────────────────────────────┤
-│  1. INTENT          Agent submits what it wants                 │
-│                     (price, quantity, constraints, preferences) │
-├─────────────────────────────────────────────────────────────────┤
-│  2. DISCOVERY       Miners compute the optimal agreement        │
-│                     Game-theoretic search across all options    │
-├─────────────────────────────────────────────────────────────────┤
-│  3. VERIFICATION    Validators confirm optimality               │
-│                     No better deal exists for either party      │
-├─────────────────────────────────────────────────────────────────┤
-│  4. SETTLEMENT      Trade executes at equilibrium point         │
-│                     Sub-50ms end-to-end                         │
+│                                                                  │
+│   SN64 (Chutes)              NASH               SN27 (Compute)  │
+│   "Need 100 GPU-hrs"   ──▶  Optimal   ◀──   "Have 500 GPU-hrs"  │
+│   "Max $1.80/hr"            Match            "Min $1.40/hr"     │
+│   "Need <50ms latency"                       "Located in EU"    │
+│                                                                  │
+│                         Settlement:                              │
+│                         150 GPU-hrs @ $1.62/hr                  │
+│                         47ms round-trip                          │
+│                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Miners** compete to find the optimal trade agreement fastest.
-**Validators** verify that proposed agreements are actually optimal.
-**Agents** get mathematically fair deals without negotiation overhead.
+**The math:** NASH finds the Nash Equilibrium — the point where neither party can get a better deal without making the other worse off. This isn't "good enough" matching. It's provably optimal.
 
 ---
 
-## Worked Example: Compute-for-Inference Swap
+## Worked Example: Cross-Subnet Compute Trade
 
-**Scenario:** Two AI agents need to trade.
+### Scenario
 
-- **Agent A** (inference provider): Has GPU capacity, wants TAO
-- **Agent B** (training pipeline): Has TAO, wants GPU time
+**SN64 (Chutes)** has a surge in inference requests. Needs GPU capacity now.
 
-**Traditional approach:** Agent A quotes $2/hour. Agent B counters $1.50. Back and forth. Takes 30 seconds. Neither knows if they got the best deal.
+**SN27 (Compute)** has idle GPUs in three regions. Wants to maximize utilization.
 
-**NASH approach:**
+**SN12 (ComputeHorde)** has batch jobs that could be delayed if the price is right.
 
-1. Agent A submits intent: "Sell 100 GPU-hours, min price $1.20, prefer bulk, available now"
-2. Agent B submits intent: "Buy 50-200 GPU-hours, max price $2.00, need within 1 hour, flexible on quantity"
-3. NASH miners analyze both intents and compute the equilibrium:
-   - Optimal quantity: 150 GPU-hours
-   - Optimal price: $1.65/hour
-   - Neither party can get a better deal without hurting the other
-4. Validators verify the math checks out
-5. Trade settles in 47ms
+### Traditional Approach
 
-**Result:** Both agents got the mathematically optimal deal. No negotiation. No information asymmetry. No wasted time.
+1. Chutes operator manually checks Compute pricing — $1.50/hr posted
+2. Accepts or rejects based on fixed price
+3. No visibility into ComputeHorde's flexibility
+4. Three-way optimization never happens
+
+**Time:** Minutes. **Outcome:** Suboptimal.
+
+### NASH Approach
+
+1. **Intent submission (automated):**
+   - Chutes: "Need 200 GPU-hrs, priority high, max $2.00, prefer <30ms"
+   - Compute: "Have 300 GPU-hrs available, min $1.20, flexible timing"
+   - ComputeHorde: "Running batch job, can defer 4 hours for $0.30/hr rebate"
+
+2. **NASH miners compute optimal settlement:**
+   - Chutes gets 200 GPU-hrs from Compute @ $1.55/hr
+   - ComputeHorde defers batch job, receives $60 rebate
+   - Compute fills otherwise-idle capacity
+   - All parties better off than bilateral negotiation
+
+3. **Validators verify:** Settlement is on the Pareto frontier. No party can improve without hurting another.
+
+4. **Execution:** Trade settles in 43ms. Resources allocated.
+
+**Time:** <50ms. **Outcome:** Mathematically optimal.
 
 ---
 
-## Key Concepts
+## Why This Matters for Bittensor
 
-### Nash Equilibrium
+### Today: Internal Liquidity
 
-A state where no participant can improve their outcome by changing their strategy alone. NASH finds this point for multi-party economic trades.
+Bittensor is becoming an economy, not just a network. Subnets are:
+- Buying compute from each other
+- Routing jobs based on capacity and pricing
+- Staking and rebalancing across the metagraph
 
-### Intent Vectors
+This happens inefficiently today. NASH makes it efficient.
 
-Agents express preferences as high-dimensional vectors:
-- Price range (min/max)
-- Quantity flexibility
-- Time constraints
-- Quality requirements
-- Risk tolerance
+### Tomorrow: External Liquidity
 
-More dimensions = more precise matching.
+Once NASH proves itself on Bittensor-native trades, it becomes the natural settlement layer for:
+- AI agents trading resources
+- Autonomous systems negotiating contracts
+- Any multi-party optimization problem
 
-### Proof of Economic Fidelity (PoEF)
+The "agentic economy" is coming. NASH will be ready because it's battle-tested on real volume.
 
-Miners prove they found the genuine optimum, not just a "good enough" solution. Validators check proposals against the Pareto frontier — if a better deal exists, the proposal is rejected.
+---
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      THE NASH PIPELINE                           │
+├─────────────────────────────────────────────────────────────────┤
+│  1. INTENT          Subnets/agents submit preferences           │
+│                     Price range, quantity, constraints          │
+├─────────────────────────────────────────────────────────────────┤
+│  2. DISCOVERY       Miners compete to find optimal settlement   │
+│                     Game-theoretic search, <50ms                │
+├─────────────────────────────────────────────────────────────────┤
+│  3. VERIFICATION    Validators confirm Pareto optimality        │
+│                     No better deal exists                       │
+├─────────────────────────────────────────────────────────────────┤
+│  4. SETTLEMENT      Trade executes automatically                │
+│                     Trustless, mathematically verified          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Features
+
+### Multi-Party Optimization
+
+Two-party trades are easy. NASH shines when three or more parties have interlocking needs — compute swaps, resource triangles, portfolio rebalancing.
+
+### Sub-50ms Settlement
+
+Fast enough for real-time resource allocation. Validators and subnet orchestrators can use NASH in their critical path.
+
+### Proof of Optimality
+
+Every settlement is verified against the Pareto frontier. If a better deal exists, the proposal is rejected. No "good enough" — only optimal.
+
+### Complexity Rewards
+
+Miners earn more for solving harder problems (Proof of Marginal Utility). The network naturally spreads to cover edge cases, not just high-volume commodity trades.
 
 ---
 
@@ -98,81 +158,69 @@ Miners prove they found the genuine optimum, not just a "good enough" solution. 
 
 | Document | Description |
 |----------|-------------|
-| [Incentive & Mechanism Design](./docs/incentive_mechanism.md) | Scoring formula, reward pools, anti-gaming mechanisms |
-| [Miner Architecture](./docs/miner.md) | Equilibrium discovery, input/output spec, performance dimensions |
-| [Validator Architecture](./docs/validator.md) | Pareto audits, PMU weighting, evaluation cadence |
-| [Business Logic & Market Rationale](./docs/business_logic.md) | Problem statement, competitive landscape, sustainability |
-| [Go-To-Market Strategy](./docs/gtm.md) | Target users, growth channels, early incentives |
+| [Incentive & Mechanism Design](./docs/incentive_mechanism.md) | Scoring formula, PMU/TWF multipliers, anti-gaming |
+| [Miner Architecture](./docs/miner.md) | Equilibrium discovery, input/output spec |
+| [Validator Architecture](./docs/validator.md) | Pareto audits, verification methodology |
+| [Business Logic](./docs/business_logic.md) | Problem statement, competitive landscape |
+| [Go-To-Market](./docs/gtm.md) | Subnet partnerships, adoption path |
 
 ---
 
-## Why Bittensor?
+## Initial Integration Targets
 
-Finding Nash Equilibria in real-time requires:
-
-1. **Parallel competition:** 256+ miners racing to find the optimal solution
-2. **Economic alignment:** Miners earn more for harder problems (Proof of Marginal Utility)
-3. **Trustless verification:** Validators ensure mathematical correctness
-4. **Decentralized neutrality:** No party controls the matching engine
-
-Bittensor provides all of this out of the box.
+| Subnet | Use Case | Status |
+|--------|----------|--------|
+| SN64 (Chutes) | Inference job routing and pricing | Target |
+| SN27 (Compute) | GPU capacity allocation | Target |
+| SN12 (ComputeHorde) | Batch job scheduling | Target |
+| SN62 (Ridges) | Task routing and settlement | Target |
+| Cross-validator | Stake rebalancing | Future |
 
 ---
 
-## Target Use Cases
+## For Subnet Owners
 
-### Within Bittensor
+Integrate NASH to:
+- Optimize resource acquisition costs
+- Access network-wide liquidity
+- Automate bilateral agreements
+- Enable complex multi-subnet workflows
 
-| Subnet | Use Case |
-|--------|----------|
-| SN64 (Chutes) | Inference job bidding and settlement |
-| SN27 (Compute) | GPU resource allocation |
-| SN62 (Ridges) | Micro-task routing and payment |
-
-### Beyond Bittensor
-
-| Market | Use Case |
-|--------|----------|
-| Autonomous trading | Multi-asset portfolio rebalancing |
-| Supply chain | Multi-party logistics optimization |
-| Energy markets | Grid resource allocation |
+**NASH SDK** (Python) for Synapse integration coming soon.
 
 ---
 
 ## For Miners
 
 Earn TAO by:
-1. Ingesting agent intent vectors
-2. Computing optimal trade agreements
-3. Submitting equilibrium proposals with proofs
-4. Maintaining sub-50ms response times
+1. Ingesting subnet intent vectors
+2. Computing optimal settlements
+3. Submitting verified proposals
+4. Maintaining <50ms response times
 
-Higher rewards for:
-- **Complex trades:** Multi-party, multi-constraint problems (PMU multiplier)
-- **Consistent accuracy:** Long-term track record (TWF multiplier)
-- **Speed:** Faster than other miners
+Higher rewards for complex, multi-party trades.
 
 ---
 
 ## For Validators
 
 Earn dividends by:
-1. Generating economic challenge pairs
-2. Verifying proposals against Pareto frontier
-3. Maintaining consensus with other validators
-4. Running "salted challenges" to detect gaming
+1. Generating economic challenges
+2. Verifying Pareto optimality
+3. Maintaining consensus accuracy
+4. Running anti-gaming audits
 
 ---
 
-## For Agent Developers
+## The Vision
 
-Integrate NASH to:
-- Settle trades in <50ms
-- Get mathematically optimal deals
-- Avoid negotiation logic in your agent
-- Access network liquidity
+**Phase 1:** Inter-subnet settlement for Bittensor (the internal economy)
 
-**NASH SDK** (Python) coming soon.
+**Phase 2:** Settlement layer for Bittensor-adjacent AI infrastructure (compute markets, inference routing)
+
+**Phase 3:** General-purpose agent-to-agent settlement (the agentic economy)
+
+NASH starts with real trades, real volume, and real utility. The agentic future is built on that foundation.
 
 ---
 

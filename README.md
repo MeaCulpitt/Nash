@@ -1,70 +1,183 @@
-# NASH: The AI-Agent Settlement Layer ⚖️🤖
+# NASH: Agent-to-Agent Settlement Layer
 
-**NASH** is a high-bandwidth Bittensor subnet designed to be the economic backbone of the 2026 Agentic Economy. It provides a decentralized, game-theoretic environment where **Autonomous AI Agents** can negotiate, match, and settle complex trades at millisecond scales.
-
-As the world transitions from human-led markets to **Agent-to-Agent (A2A) commerce**, NASH replaces traditional, friction-heavy negotiation with a competitive discovery of the **Nash Equilibrium**. By resolving the "Surface of Agreement" between competing agentic intents, NASH ensures that autonomous systems can exchange value with zero human intervention and maximum mathematical efficiency.
+NASH is a Bittensor subnet that finds optimal trade agreements between AI agents. When autonomous systems need to exchange value — compute for tokens, services for payment, resources for resources — NASH calculates the mathematically optimal deal and settles it in milliseconds.
 
 ---
 
-## 🏛️ What is NASH? The Infrastructure for Agentic Intent
+## The Problem
 
-NASH is a **Decentralized Game-Theoretic Settlement Layer** purpose-built for AI agents. It acts as the "Economic Router" that translates disparate agent preferences into verified, high-fidelity trade settlements.
+AI agents are becoming economic actors. They buy compute, sell services, and trade resources. But when two agents with competing interests need to make a deal, they face a problem: **how do you negotiate without a human in the loop?**
 
-### 1. The Intent-to-Equilibrium Flow
-In a legacy market, agents must engage in slow, multi-turn "chat-based" negotiation. NASH bypasses this:
-* **The Step:** An AI agent compresses its complex preferences (price, urgency, quality, logistics) into a high-dimensional **Intent Vector**.
-* **The Resolution:** NASH miners ingest these vectors and construct a **Nash Manifold**—a mathematical map of all possible agreement points.
-* **The Result:** The network identifies the **Global Equilibrium** in under 50ms, allowing agents to settle trades faster than a human can blink.
+Current approaches fail:
 
-### 2. Eliminating the A2A "Standoff"
-When two autonomous agents represent competing interests, they often reach a "negotiation standoff." 
-* **The NASH Solution:** The subnet acts as a neutral, decentralized "Market Brain." It calculates the point where no agent can improve its position without making the other worse off, providing a **Consensus-Backed Ground Truth** that both agents can trust and execute upon.
+| Approach | Problem |
+|----------|---------|
+| Chat-based negotiation | Too slow (seconds to minutes) |
+| Fixed pricing | Leaves value on the table |
+| Centralized matching | Single point of failure, high fees |
+| Pairwise P2P | No liquidity, local optima |
 
-
----
-
-## 📂 Core Documentation
-
-Explore the technical framework driving the A2A economy:
-
-### 1. [Incentive & Mechanism Design](./INCENTIVE_MECHANISM.md)
-* **Proof of Economic Fidelity (PoEF):** How we score miners on their ability to resolve complex agentic intents.
-* **Proof of Marginal Utility (PMU):** Rewarding miners who find settlements in niche, high-complexity agent markets.
-* **Time-Weighted Fidelity (TWF):** Ensuring that the agents are settling via the most reliable nodes in the metagraph.
-
-### 2. [Miner Design: Equilibrium Discovery](./MINER_DESIGN.md)
-* **Geometric Discovery:** How miners act as high-speed solvers for agentic trade manifolds.
-* **Input → Output Specifications:** Detailing the JSON-based **Intent-to-Equilibrium** protocol for agent developers.
-
-### 3. [Validator Design: The Equilibrium Auditor](./VALIDATOR_DESIGN.md)
-* **The Pareto Audit:** Ensuring that the proposed settlement is the absolute best outcome for the participating agents.
-* **Latency Enforcement:** Maintaining the sub-200ms response time required for real-time agentic interaction.
-
-### 4. [Business Logic & Market Rationale](./BUSINESS_LOGIC.md)
-* **The A2A Economy:** Why NASH is the mandatory settlement layer for the next generation of autonomous commerce.
-* **Network Effect Moat:** Why agents achieve better outcomes within the NASH metagraph than through private, pairwise p2p connections.
-
-### 5. [Go-To-Market & Sustainability](./GTM_STRATEGY.md)
-* **The Equilibrium Fee Model:** Buy-back and burn mechanisms fueled by agent-to-agent transaction volume.
-* **Alpha Token Utility:** Using the **NASH Alpha token** as the reputation-collateral for every agentic settlement.
+Agents need a way to find the best possible deal — the point where neither party can improve without making the other worse off. In game theory, this is called the **Nash Equilibrium**.
 
 ---
 
-## 🛠️ Key Technical Features for Agent Developers
+## How NASH Works
 
-* **Intent Compression:** Support for high-dimensional vectors that capture complex, non-linear agent preferences.
-* **Zero-Trust Settlement:** Utilizing dTAO and TWF to ensure agents can trade without fear of counterparty default.
-* **Asynchronous Matching:** Allowing agents to submit "Passive Intent" that the network resolves as soon as a matching equilibrium is discovered.
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     THE NASH PIPELINE                            │
+├─────────────────────────────────────────────────────────────────┤
+│  1. INTENT          Agent submits what it wants                 │
+│                     (price, quantity, constraints, preferences) │
+├─────────────────────────────────────────────────────────────────┤
+│  2. DISCOVERY       Miners compute the optimal agreement        │
+│                     Game-theoretic search across all options    │
+├─────────────────────────────────────────────────────────────────┤
+│  3. VERIFICATION    Validators confirm optimality               │
+│                     No better deal exists for either party      │
+├─────────────────────────────────────────────────────────────────┤
+│  4. SETTLEMENT      Trade executes at equilibrium point         │
+│                     Sub-50ms end-to-end                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Miners** compete to find the optimal trade agreement fastest.
+**Validators** verify that proposed agreements are actually optimal.
+**Agents** get mathematically fair deals without negotiation overhead.
 
 ---
 
-## 🚀 Vision: The Intelligence of Exchange
+## Worked Example: Compute-for-Inference Swap
 
-NASH is the first **Proof of Intelligence** applied to the fundamental bottleneck of the agentic age: **Trustless Negotiation**. By incentivizing the discovery of economic truth, NASH provides the infrastructure that allows AI agents to build, trade, and scale the global economy of tomorrow.
+**Scenario:** Two AI agents need to trade.
+
+- **Agent A** (inference provider): Has GPU capacity, wants TAO
+- **Agent B** (training pipeline): Has TAO, wants GPU time
+
+**Traditional approach:** Agent A quotes $2/hour. Agent B counters $1.50. Back and forth. Takes 30 seconds. Neither knows if they got the best deal.
+
+**NASH approach:**
+
+1. Agent A submits intent: "Sell 100 GPU-hours, min price $1.20, prefer bulk, available now"
+2. Agent B submits intent: "Buy 50-200 GPU-hours, max price $2.00, need within 1 hour, flexible on quantity"
+3. NASH miners analyze both intents and compute the equilibrium:
+   - Optimal quantity: 150 GPU-hours
+   - Optimal price: $1.65/hour
+   - Neither party can get a better deal without hurting the other
+4. Validators verify the math checks out
+5. Trade settles in 47ms
+
+**Result:** Both agents got the mathematically optimal deal. No negotiation. No information asymmetry. No wasted time.
 
 ---
 
-## 🤝 Contributing
-We are currently in the **Ideathon Phase**. We are specifically seeking agent developers and game theorists to help build the protocol that will power the A2A economy.
+## Key Concepts
 
-*“The future of trade isn't human. It's agentic, mathematical, and decentralized.”*
+### Nash Equilibrium
+
+A state where no participant can improve their outcome by changing their strategy alone. NASH finds this point for multi-party economic trades.
+
+### Intent Vectors
+
+Agents express preferences as high-dimensional vectors:
+- Price range (min/max)
+- Quantity flexibility
+- Time constraints
+- Quality requirements
+- Risk tolerance
+
+More dimensions = more precise matching.
+
+### Proof of Economic Fidelity (PoEF)
+
+Miners prove they found the genuine optimum, not just a "good enough" solution. Validators check proposals against the Pareto frontier — if a better deal exists, the proposal is rejected.
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Incentive & Mechanism Design](./docs/incentive_mechanism.md) | Scoring formula, reward pools, anti-gaming mechanisms |
+| [Miner Architecture](./docs/miner.md) | Equilibrium discovery, input/output spec, performance dimensions |
+| [Validator Architecture](./docs/validator.md) | Pareto audits, PMU weighting, evaluation cadence |
+| [Business Logic & Market Rationale](./docs/business_logic.md) | Problem statement, competitive landscape, sustainability |
+| [Go-To-Market Strategy](./docs/gtm.md) | Target users, growth channels, early incentives |
+
+---
+
+## Why Bittensor?
+
+Finding Nash Equilibria in real-time requires:
+
+1. **Parallel competition:** 256+ miners racing to find the optimal solution
+2. **Economic alignment:** Miners earn more for harder problems (Proof of Marginal Utility)
+3. **Trustless verification:** Validators ensure mathematical correctness
+4. **Decentralized neutrality:** No party controls the matching engine
+
+Bittensor provides all of this out of the box.
+
+---
+
+## Target Use Cases
+
+### Within Bittensor
+
+| Subnet | Use Case |
+|--------|----------|
+| SN64 (Chutes) | Inference job bidding and settlement |
+| SN27 (Compute) | GPU resource allocation |
+| SN62 (Ridges) | Micro-task routing and payment |
+
+### Beyond Bittensor
+
+| Market | Use Case |
+|--------|----------|
+| Autonomous trading | Multi-asset portfolio rebalancing |
+| Supply chain | Multi-party logistics optimization |
+| Energy markets | Grid resource allocation |
+
+---
+
+## For Miners
+
+Earn TAO by:
+1. Ingesting agent intent vectors
+2. Computing optimal trade agreements
+3. Submitting equilibrium proposals with proofs
+4. Maintaining sub-50ms response times
+
+Higher rewards for:
+- **Complex trades:** Multi-party, multi-constraint problems (PMU multiplier)
+- **Consistent accuracy:** Long-term track record (TWF multiplier)
+- **Speed:** Faster than other miners
+
+---
+
+## For Validators
+
+Earn dividends by:
+1. Generating economic challenge pairs
+2. Verifying proposals against Pareto frontier
+3. Maintaining consensus with other validators
+4. Running "salted challenges" to detect gaming
+
+---
+
+## For Agent Developers
+
+Integrate NASH to:
+- Settle trades in <50ms
+- Get mathematically optimal deals
+- Avoid negotiation logic in your agent
+- Access network liquidity
+
+**NASH SDK** (Python) coming soon.
+
+---
+
+## License
+
+MIT
+
+---

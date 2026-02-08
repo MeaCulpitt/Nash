@@ -171,8 +171,8 @@ Miners earn more for solving harder problems (Proof of Marginal Utility). The ne
 | Subnet | Use Case | Status |
 |--------|----------|--------|
 | SN64 (Chutes) | Inference job routing and pricing | Target |
-| SN27 (Compute) | GPU capacity allocation | Target |
-| SN12 (ComputeHorde) | Batch job scheduling | Target |
+| SN27 (Nodexo) | GPU capacity allocation | Target |
+| SN12 (Compute Horde) | Batch job scheduling | Target |
 | SN62 (Ridges) | Task routing and settlement | Target |
 | Cross-validator | Stake rebalancing | Future |
 

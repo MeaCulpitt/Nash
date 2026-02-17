@@ -15,7 +15,7 @@ NASH needs three constituencies to succeed: **subnets** (who provide liquidity),
 | **SN64 (Chutes)** | Inference job routing | High | GPU demand, time-sensitive |
 | **SN27 (Nodexo)** | GPU capacity allocation | High | Supply side, needs customers |
 | **SN12 (ComputeHorde)** | Batch job scheduling | Medium | Flexible demand |
-| **SN62 (Ridges)** | Task routing | Medium | Complementary |
+| **SN62 (Ridges)** | Autonomous AI coding agents | Low | Complementary |
 
 ### Early Validator Targets
 

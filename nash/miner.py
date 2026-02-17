@@ -175,5 +175,3 @@ if __name__ == "__main__":
 ```
 
 ---
-
-Ready for the next file?

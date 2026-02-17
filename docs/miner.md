@@ -18,7 +18,7 @@ OUTPUT: Equilibrium proposal
 
 ## Miner Tasks
 
-### 1. Intent Encoding / Parsing
+### 1. Intent Parsing
 - Parse incoming intent vectors from validators
 - Convert to utility functions for each party
 - Validate constraints
@@ -138,11 +138,11 @@ Validator broadcasts:
 ├─────────────────────────────────────────────────────────────────┤
 │  1. INTENT           Parse incoming intent vectors              │
 │     PARSING          Convert to utility functions               │
-│                      Validate constraints                       │
+│                      Validate constraints                        │
 ├─────────────────────────────────────────────────────────────────┤
-│  2. MANIFOLD         Construct trade possibility space          │
+│  2. MANIFOLD         Construct trade possibility space         │
 │     CONSTRUCTION     Map all feasible settlements               │
-│                      Identify constraint boundaries             │
+│                      Identify constraint boundaries              │
 ├─────────────────────────────────────────────────────────────────┤
 │  3. EQUILIBRIUM      Search for Pareto frontier                │
 │     DISCOVERY        Find Nash stable point                     │
@@ -158,32 +158,82 @@ All four stages must complete within 200ms response window.
 
 ---
 
-## Expected Input → Output Format
+## Input/Output Specification
 
-**Input (from Validator):**
-```python
-class NashSynapse(bt.Synapse):
-    raw_intent: torch.FloatTensor  # [Price, Latency, Reliability, ...]
-    context: Optional[dict]        # {"Hardware": "H100", "Region": "US-East"}
-```
+### Input Format (Validator → Miner)
 
-**Output (from Miner):**
-```python
-class NashSynapse(bt.Synapse):
-    manifold_tensor: torch.FloatTensor    # Compressed representation (256-dim)
-    equilibrium_point: torch.FloatTensor  # (x, y) optimal coordinates
-```
+| Field | Type | Description |
+|-------|------|-------------|
+| `challenge_id` | hex-512 | Unique challenge identifier |
+| `parties` | array | List of participating subnets/agents |
+| `parties[].id` | string | Subnet or agent identifier |
+| `parties[].intent` | enum | buy, sell, swap, defer |
+| `parties[].resource` | string | What's being traded |
+| `parties[].quantity` | object | Min/max/available amounts |
+| `parties[].price` | object | Min/max acceptable prices |
+| `parties[].constraints` | array | Hard requirements |
+| `response_window_ms` | int | Time limit for response |
+
+### Output Format (Miner → Validator)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `challenge_id` | hex-512 | Echo back for matching |
+| `settlement` | object | Proposed terms for each party |
+| `settlement[party].action` | enum | What this party does |
+| `settlement[party].quantity` | float | Amount traded |
+| `settlement[party].price_per_unit` | float | Settlement price |
+| `settlement[party].constraints_met` | array | Proof of constraint satisfaction |
+| `equilibrium_proof` | object | Mathematical verification |
+| `equilibrium_proof.pareto_optimal` | bool | On the Pareto frontier? |
+| `equilibrium_proof.utility_scores` | object | Utility achieved per party |
+| `commitment_hash` | sha256 | Prevents post-hoc modification |
+| `response_time_ms` | int | Self-reported latency |
 
 ---
 
-## Performance Dimensions
+## Scoring Dimensions
 
-| Dimension | Target | Impact |
-|-----------|--------|--------|
-| **Quality** | ≥0.95 Q-score | Directly multiplies emission |
-| **Speed** | <50ms | No penalty; >100ms = TWF decay |
-| **Uptime** | >95% | 20% of TWF weight |
-| **Complexity** | 3+ parties | Up to 4x PMU bonus |
+Miners are evaluated on four dimensions:
+
+### Quality: Equilibrium Accuracy (50% weight)
+
+**Metric:** Is the proposal on the Pareto frontier?
+
+| Result | Q Score |
+|--------|---------|
+| Pareto optimal, Nash stable | 1.0 |
+| Pareto optimal, not Nash stable | 0.85 |
+| Within 0.1% of frontier | 0.90 |
+| Within 1% of frontier | 0.70 |
+| Dominated by another solution | 0.0 |
+
+### Utility: Marginal Discovery (PMU)
+
+**Metric:** PMU multiplier based on problem difficulty.
+
+| Trade Complexity | PMU Range |
+|------------------|-----------|
+| Two-party, no constraints | 0.3x - 0.5x |
+| Two-party with constraints | 0.6x - 1.0x |
+| Three-party | 1.5x - 2.5x |
+| Four+ party | 2.5x - 4.0x |
+
+Also scaled by solver count — fewer miners solving = higher PMU.
+
+### Speed: Response Latency
+
+**Metric:** Response time vs. 200ms window.
+
+| Response Time | Impact |
+|---------------|--------|
+| <50ms | Optimal, no penalty |
+| 50-100ms | Minor penalty |
+| >100ms | Major TWF decay |
+
+### Uptime: Participation
+
+**Metric:** % of challenges responded to. Part of TWF calculation (20% weight).
 
 ---
 
@@ -200,5 +250,16 @@ class NashMiner(bt.Neuron):
         equilibrium = self.solver(manifold)
         return synapse
 ```
+
+---
+
+## Performance Targets
+
+| Dimension | Target | Impact |
+|-----------|--------|--------|
+| **Quality** | ≥0.95 Q-score | Directly multiplies emission |
+| **Speed** | <50ms | No penalty; >100ms = TWF decay |
+| **Uptime** | >95% | 20% of TWF weight |
+| **Complexity** | 3+ parties | Up to 4x PMU bonus |
 
 ---

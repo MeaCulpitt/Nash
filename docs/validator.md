@@ -1,398 +1,229 @@
-# NASH: Validator Architecture & Audit Logic
-
-NASH validators ensure that miner proposals are genuinely optimal — not just feasible, but the best possible settlement for all parties. They generate trade challenges, verify Pareto optimality, and maintain consensus on miner performance.
-
----
+# Validator Design
 
 ## What Validators Do
 
-Validators serve three functions:
+Validators are the **orchestrators** of the NASH network. They don't find equilibria — they **verify** that miners did, and ensure the incentive mechanism runs fairly.
 
-1. **Challenge generation:** Create realistic trade scenarios from subnet intents
-2. **Optimality verification:** Confirm proposals are on the Pareto frontier
-3. **Consensus maintenance:** Agree with other validators on miner rankings
+### The Core Task
 
-A validator isn't checking if a trade *can* happen — they're checking if it's the *best* trade possible.
+```
+INPUT:  Miner settlement proposals
+        (from multiple miners)
+
+OUTPUT: Weighted scores for each miner
+        (submitted to blockchain)
+```
+
+Validators run the incentive mechanism — generating challenges, scoring responses, and maintaining network integrity.
 
 ---
 
-## Worked Example: Verifying a Three-Party Settlement
+## Validator Tasks
 
-### Challenge Issued
+### 1. Intent Collection
+- Receive intents from subnets via API/SDK
+- Aggregate preferences into challenges
+- Format for miner consumption
 
-Validator generates challenge from real or synthetic subnet intents:
+### 2. Challenge Generation
+- Create synthetic economic challenges (before real subnets join)
+- Mix synthetic + real intents
+- Ensure challenge diversity
 
-```json
-{
-  "challenge_id": "0x7a3f...",
-  "parties": [
-    {"id": "sn64_chutes", "intent": "buy", "resource": "gpu_hours", ...},
-    {"id": "sn27_nodexo", "intent": "sell", "resource": "gpu_hours", ...},
-    {"id": "sn12_compute_horde", "intent": "defer", "resource": "gpu_hours", ...}
-  ]
-}
-```
+### 3. Miner Querying
+- Broadcast challenges to all active miners
+- Collect responses within time window
+- Handle timeouts gracefully
 
-### Proposals Received
+### 4. Response Validation
+- Check for NaN/Inf values
+- Verify valid shapes
+- Detect suspicious patterns (pre-computed, etc.)
 
-Within 200ms window, validator receives 47 proposals from miners.
+### 5. Quality Scoring
+- Run baseline simulations
+- Compare miner solutions to ground truth
+- Calculate fidelity scores
 
-### Verification Process
-
-**Step 1: Constraint Check**
-
-For each proposal, verify all hard constraints are satisfied:
-- Chutes: latency < 50ms? ✓
-- Nodexo: price >= $1.30? ✓
-- Compute Horde: defer <= 8 hours? ✓
-
-Proposals violating constraints → disqualified.
-
-**Step 2: Pareto Frontier Analysis**
-
-Validator runs baseline simulation to construct the true Pareto frontier.
-
-```python
-def is_pareto_optimal(proposal, all_proposals):
-    for other in all_proposals:
-        if dominates(other, proposal):
-            # Other proposal is strictly better for at least one party
-            # and no worse for any party
-            return False
-    return True
-```
-
-Results:
-- 31 proposals: Pareto dominated (another proposal is strictly better)
-- 12 proposals: On the Pareto frontier
-- 4 proposals: Constraint violations
-
-**Step 3: Nash Stability Check**
-
-For frontier proposals, verify Nash stability — no party has incentive to deviate.
-
-```python
-def is_nash_stable(proposal):
-    for party in proposal.parties:
-        # If this party could do better by changing their action
-        # (given other parties stay fixed), it's not stable
-        if has_profitable_deviation(party, proposal):
-            return False
-    return True
-```
-
-Results:
-- 8 proposals: Nash stable
-- 4 proposals: On frontier but not stable (party could deviate profitably)
-
-**Step 4: Scoring**
-
-| Miner | Constraint | Pareto | Nash | Q Score |
-|-------|------------|--------|------|---------|
-| Miner A | ✓ | ✓ | ✓ | 1.0 |
-| Miner B | ✓ | ✓ | ✓ | 1.0 |
-| Miner C | ✓ | ✓ | ✗ | 0.85 |
-| Miner D | ✓ | ✗ | — | 0.0 |
-| Miner E | ✗ | — | — | 0.0 |
-
-**Step 5: PMU and TWF Application**
-
-For miners with Q > 0:
-```
-Final Score = Q × PMU × TWF
-```
-
-- Miner A: 1.0 × 2.2 × 1.15 = **2.53**
-- Miner B: 1.0 × 2.2 × 0.95 = **2.09**
-- Miner C: 0.85 × 2.2 × 1.10 = **2.06**
+### 6. Consensus & Weight Setting
+- Aggregate scores across validators (stake-weighted)
+- Submit final weights to blockchain
 
 ---
 
-## The Verification Stack
+## The Validator Pipeline
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    VERIFICATION STACK                            │
+│                    VALIDATOR PIPELINE                            │
 ├─────────────────────────────────────────────────────────────────┤
-│  Layer 1: CONSTRAINT VALIDATION                                  │
-│           All hard constraints satisfied?                        │
-│           Immediate disqualification if not                      │
+│  1. INTENT        Collect intents from subnets                │
+│     COLLECTION     Aggregate into challenges                    │
 ├─────────────────────────────────────────────────────────────────┤
-│  Layer 2: PARETO ANALYSIS                                        │
-│           Is proposal on the efficiency frontier?                │
-│           Dominated proposals score zero                         │
+│  2. CHALLENGE     Generate synthetic challenges               │
+│     GENERATION     Mix real + synthetic intents                │
+│                   Ensure diversity                              │
 ├─────────────────────────────────────────────────────────────────┤
-│  Layer 3: NASH STABILITY                                         │
-│           Does any party have incentive to deviate?              │
-│           Unstable proposals receive penalty                     │
+│  3. QUERY         Broadcast to all active miners              │
+│                   Collect responses                            │
+│                   Handle timeouts                              │
 ├─────────────────────────────────────────────────────────────────┤
-│  Layer 4: PMU WEIGHTING                                          │
-│           How difficult was this challenge?                      │
-│           How many miners solved it?                             │
+│  4. VALIDATION    Check for NaN/Inf                           │
+│                   Verify shapes                                 │
+│                   Detect suspicious patterns                   │
 ├─────────────────────────────────────────────────────────────────┤
-│  Layer 5: TWF APPLICATION                                        │
-│           Miner's historical accuracy and latency                │
-│           Reputation multiplier                                  │
+│  5. SCORING       Run baseline simulations                    │
+│                   Compare to ground truth                      │
+│                   Calculate fidelity scores                    │
+├─────────────────────────────────────────────────────────────────┤
+│  6. CONSENSUS     Aggregate (stake-weighted)                  │
+│                   Set weights on blockchain                    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Pareto Frontier Verification
+## Scoring and Evaluation Methodology
 
-The core validator task: determining if a proposal is truly optimal.
+### Step 1: Generate Challenge
+Validator creates a challenge representing a potential settlement scenario.
 
-### What is Pareto Optimality?
-
-A settlement is Pareto optimal if you cannot make any party better off without making another party worse off.
-
-```
-Proposal A: Chutes pays $1.52/hr, Nodexo earns $304
-Proposal B: Chutes pays $1.48/hr, Nodexo earns $296
-
-B is better for Chutes, worse for Nodexo.
-Neither dominates the other — both could be on the frontier.
-
-Proposal C: Chutes pays $1.55/hr, Nodexo earns $290
-
-C is worse for both parties compared to A.
-A dominates C. C is not Pareto optimal.
+```json
+{
+  "challenge_id": "0xabc123",
+  "parties": [...],
+  "expected_optimal": {...},  // Known for synthetic challenges
+  "difficulty": "medium"
+}
 ```
 
-### Baseline Simulation
+### Step 2: Query Miners
+Broadcast to all active miner axons, collect responses within 5-second window.
 
-Validators run their own equilibrium search to establish ground truth:
+### Step 3: Validate Responses
+```python
+def validate_response(response):
+    if response.manifold is None:
+        return False
+    if torch.isnan(response.manifold).any():
+        return False
+    if torch.isinf(response.manifold).any():
+        return False
+    if response.equilibrium.numel() != 2:
+        return False
+    return True
+```
 
-1. Parse the same intent vectors miners receive
-2. Run local optimization algorithm
-3. Construct the Pareto frontier
-4. Compare miner proposals against frontier
-
-This requires validators to have competitive solving capability — not as fast as miners, but accurate enough to verify.
-
-### Dominance Testing
-
-For each proposal, check against all other proposals:
+### Step 4: Calculate Fidelity
+Run baseline simulation to determine ground truth, compare miner solutions.
 
 ```python
-def dominates(a, b):
-    """Does proposal A dominate proposal B?"""
-    dominated = False
-    for party in parties:
-        utility_a = calculate_utility(party, a)
-        utility_b = calculate_utility(party, b)
-        
-        if utility_a < utility_b:
-            return False  # B is better for this party
-        if utility_a > utility_b:
-            dominated = True  # A is better for at least one party
-    
-    return dominated  # A is at least as good for all, better for one
+def calculate_fidelity(miner_solution, ground_truth):
+    mse = ((miner_solution - ground_truth) ** 2).mean()
+    fidelity = 1.0 - mse  # Higher is better
+    return fidelity
 ```
+
+### Step 5: Compute Consensus
+Stake-weighted average across all validators.
+
+```python
+def weighted_consensus(miner_scores, validators):
+    weighted_scores = []
+    for v in validators:
+        weight = v.stake * v.v_trust
+        for miner, score in v.scores.items():
+            weighted_scores.append((miner, score * weight))
+    
+    # Aggregate by miner
+    final = {}
+    for miner, weighted in weighted_scores:
+        if miner not in final:
+            final[miner] = []
+        final[miner].append(weighted)
+    
+    return {m: sum(s)/len(s) for m, s in final.items()}
+```
+
+### Step 6: Set Weights
+Submit to blockchain.
 
 ---
 
-## PMU Weighting
+## V-Trust (Validator Reputation)
 
-Validators calculate the Proof of Marginal Utility multiplier per challenge.
-
-### Factors
-
-| Factor | Impact |
-|--------|--------|
-| Party count | More parties = higher complexity |
-| Constraint count | More constraints = harder optimization |
-| Solver count | Fewer solvers = higher individual reward |
-| Novelty | Unseen trade patterns = bonus |
-
-### Calculation
+Validators have their own reputation system:
 
 ```python
-def calculate_pmu(challenge, valid_solutions):
-    # Base complexity from problem structure
-    party_factor = challenge.party_count ** 1.5
-    constraint_factor = log2(challenge.constraint_count + 1)
-    complexity = party_factor * constraint_factor
-    
-    # Dilution from competition
-    solver_count = len(valid_solutions)
-    dilution = 1.0 / sqrt(solver_count)
-    
-    # Novelty bonus for rare trade types
-    novelty = 1.5 if is_novel(challenge.type) else 1.0
-    
-    return complexity * dilution * novelty
+def calculate_v_trust(validator):
+    V_TRUST = (
+        0.4 * consensus_accuracy +   # Agrees with majority
+        0.3 * speed_score +          # Verification speed
+        0.3 * challenge_diversity     # Novel challenge types
+    )
+    return V_TRUST
+
+# Quadratic voting power
+validator.voting_power = validator.stake ** 0.5 * V_TRUST
 ```
 
-### Typical PMU Values
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| Consensus Accuracy | 40% | How often validator agrees with majority |
+| Speed | 30% | Verification time vs. threshold |
+| Diversity | 30% | Novel challenge types introduced |
 
-| Challenge Type | Solvers | PMU |
-|----------------|---------|-----|
-| Two-party token swap | 150 | 0.3x |
-| Two-party with 5 constraints | 80 | 0.7x |
-| Three-party resource trade | 25 | 2.0x |
-| Four-party with timing constraints | 8 | 3.5x |
+### Why V-Trust Matters
+
+- **Higher dividends** — Quadratic bonus for proven validators
+- **More voting power** — Stake × V-Trust in consensus
+- **Network quality** — Rewards accurate, fast, diverse verification
 
 ---
 
-## TWF Tracking
+## Validator Dividends
 
-Validators maintain a Time-Weighted Fidelity score for each miner UID.
-
-### Rolling Average
+Validators earn from network emissions:
 
 ```python
-def update_twf(miner, challenge_result):
-    # Decay factor for older results
-    decay = 0.995  # Per challenge
-    
-    # Update accuracy component
-    miner.accuracy_sum = miner.accuracy_sum * decay + challenge_result.quality
-    miner.accuracy_count = miner.accuracy_count * decay + 1
-    
-    # Update latency component
-    miner.latency_sum = miner.latency_sum * decay + challenge_result.response_time
-    miner.latency_count = miner.latency_count * decay + 1
-    
-    # Calculate TWF
-    avg_accuracy = miner.accuracy_sum / miner.accuracy_count
-    avg_latency = miner.latency_sum / miner.latency_count
-    
-    miner.TWF = (avg_accuracy * 0.7) + (latency_score(avg_latency) * 0.3)
+def calculate_validator_dividends(validator):
+    base = validator.stake / total_network_stake
+    trust_bonus = validator.v_trust ** 2      # Quadratic!
+    diversity_bonus = 1.0 + (validator.unique_challenges / 10)
+    return base * trust_bonus * diversity_bonus
 ```
-
-### TWF Impact
-
-| TWF Score | Interpretation | Multiplier |
-|-----------|----------------|------------|
-| 0.95+ | Elite performer | 1.4x - 1.5x |
-| 0.85 - 0.95 | Strong | 1.1x - 1.4x |
-| 0.70 - 0.85 | Average | 0.9x - 1.1x |
-| 0.50 - 0.70 | Below average | 0.6x - 0.9x |
-| < 0.50 | Poor / new | 0.5x - 0.7x |
 
 ---
 
 ## Evaluation Cadence
 
-### Per-Challenge (Real-Time)
-
-- Challenge broadcast: Every block (~12 seconds)
-- Response window: 200ms
-- Immediate verification: Constraint + Pareto check
-- Score calculation: Q × PMU × TWF
-
-### Per-Epoch (Hourly)
-
-- Aggregate scores across all challenges
-- Normalize across miner population
-- Commit weight matrix to Subtensor
-- Yuma Consensus determines final emissions
-
-### Periodic Audits
-
-- **Salted challenges:** Known solutions to detect pre-computation
-- **Replay challenges:** Identical problems to check consistency
-- **Cross-validator comparison:** Detect scoring anomalies
+| Metric | Value |
+|--------|-------|
+| Challenge frequency | Every 10 seconds |
+| Response window | 5 seconds |
+| Weight updates | Every 100 blocks (~20 min) |
+| Consensus calculation | Real-time aggregation |
 
 ---
 
 ## Validator Incentive Alignment
 
-### V-Trust and Dividends
+Optimal validator strategy:
 
-Validators earn based on consensus alignment:
-
-```python
-def validator_dividend(validator, epoch_scores):
-    # How close is this validator's scoring to the consensus?
-    consensus = stake_weighted_median(all_validator_scores)
-    deviation = mean_absolute_error(validator.scores, consensus)
-    
-    # Higher deviation = lower trust = lower dividends
-    v_trust = 1.0 - (deviation * penalty_factor)
-    
-    return base_dividend * v_trust
-```
-
-Validators who score miners differently from consensus see reduced earnings.
-
-### Infrastructure Requirements
-
-To verify effectively, validators need:
-- Fast enough compute to run baseline simulations
-- Low-latency connections to measure miner response times
-- Sufficient stake to influence consensus
-
-### Anti-Collusion
-
-Collusion is detectable because:
-
-1. **Pareto verification is deterministic:** A dominated solution is mathematically dominated — no room for subjective scoring
-2. **Cross-validator checks:** Outlier scoring patterns are flagged
-3. **Stake economics:** Colluding validators lose dividends when they deviate from honest validators
+1. **Accurate verification** — V-Trust determines dividend share
+2. **Consensus alignment** — Outlier scores penalized
+3. **Challenge diversity** — Novel challenge types = new PMU opportunities + V-Trust boost
+4. **Fast baseline simulation** — Required to judge within time window
+5. **Stake up** — Higher stake = more voting power in consensus
 
 ---
 
-## Challenge Generation
+## Requirements for Validators
 
-Validators generate challenges from:
-
-### Real Subnet Intents
-
-When integrated with partner subnets (SN64, SN27, etc.), validators can pull actual pending trade requests:
-
-```python
-def generate_real_challenge():
-    intents = fetch_pending_intents([SN64, SN27, SN12])
-    if len(intents) >= 2:
-        return package_as_challenge(intents)
-    else:
-        return generate_synthetic_challenge()
-```
-
-### Synthetic Challenges
-
-For training and benchmarking, validators generate realistic synthetic scenarios:
-
-```python
-def generate_synthetic_challenge():
-    party_count = weighted_random([2, 3, 4], [0.6, 0.3, 0.1])
-    parties = [generate_random_intent() for _ in range(party_count)]
-    constraints = generate_realistic_constraints(parties)
-    
-    return Challenge(parties, constraints)
-```
-
-Synthetic challenges ensure miners are tested on edge cases that may not appear in real traffic.
-
----
-
-## Validator Infrastructure
-
-### Minimum Requirements
-
-| Component | Requirement |
-|-----------|-------------|
-| CPU | 16-core, 3.5GHz+ |
-| RAM | 64GB |
-| Network | 1Gbps, low latency |
-| Storage | 500GB SSD |
-
-### Recommended
-
-| Component | Recommendation |
-|-----------|----------------|
-| CPU | 32-core, 4.0GHz+ |
-| RAM | 128GB |
-| Network | 10Gbps, <5ms to major nodes |
-
-### Why Higher Specs Than Miners?
-
-Validators must:
-- Run baseline simulations for every challenge
-- Verify all miner proposals (potentially 256)
-- Maintain TWF state for all miners
-- Process in real-time without becoming a bottleneck
+| Requirement | Value |
+|-------------|-------|
+| Minimum stake | 1000 τ (including delegated) |
+| Permit | Must be in top 64 by emissions |
+| Hardware | Standard Bittensor validator specs |
 
 ---

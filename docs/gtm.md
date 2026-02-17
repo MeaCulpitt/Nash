@@ -70,12 +70,6 @@ settlement = client.request_compute(
 )
 ```
 
-### 4. Hackathon Presence
-
-- Bittensor hackathons (like this one!)
-- ETHGlobal, Solana Breakpoint (cross-chain narrative)
-- University blockchain clubs
-
 ---
 
 ## Incentives for Early Participation

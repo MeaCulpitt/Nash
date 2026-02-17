@@ -1,5 +1,3 @@
----
-
 ## Go-To-Market Strategy
 
 ## Overview

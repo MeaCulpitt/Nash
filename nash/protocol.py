@@ -85,5 +85,3 @@ class NashSynapse(bt.Synapse):
 ```
 
 ---
-
-Ready for the next file?

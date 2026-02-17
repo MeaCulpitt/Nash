@@ -13,5 +13,3 @@ __all__ = ["NashSynapse", "NashMiner", "NashValidator"]
 ```
 
 ---
-
-Ready for the next file?

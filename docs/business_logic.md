@@ -11,7 +11,7 @@ Bittensor subnets increasingly need to trade with each other, but currently ther
 | **SN64 (Chutes)** | GPU capacity for inference | Needs compute |
 | **SN27 (Nodexo)** | Customers for GPU capacity | Has GPUs |
 | **SN12 (ComputeHorde)** | Dynamic pricing for batch | Has compute |
-| **Validators** | Rebalance stake across subnets | Need coordination |
+| **SN62 (Ridges)** | Coordinates autonomous AI coding agents | — |
 
 ### Why Current Solutions Fail
 

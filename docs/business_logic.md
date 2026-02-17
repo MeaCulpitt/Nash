@@ -1,279 +1,154 @@
-# NASH: Business Logic & Market Rationale
-
-NASH solves the coordination problem between Bittensor subnets. Today, subnets that need to trade resources — compute, inference capacity, data — do so inefficiently through manual coordination or fixed pricing. NASH replaces that with automated, optimal settlement.
-
----
+# Business Logic & Market Rationale
 
 ## The Problem
 
-Bittensor is becoming an internal economy. Subnets buy and sell:
+Bittensor subnets increasingly need to trade with each other, but currently there's no efficient way to do it.
 
-| Resource | Sellers | Buyers |
-|----------|---------|--------|
-| GPU compute | SN27 (Nodexo), SN12 (Compute Horde) | SN64 (Chutes), inference subnets |
-| Inference capacity | SN64 (Chutes) | Application subnets, external users |
-| Data | Data subnets | Training subnets |
-| Bandwidth | Infrastructure subnets | High-throughput subnets |
+### Current State
 
-**Current state:** These trades happen through:
-- Discord DMs between subnet operators
-- Fixed posted prices (no negotiation)
-- Manual bilateral agreements
-- No visibility into network-wide supply/demand
+| Subnet | Need | Has |
+|--------|------|-----|
+| **SN64 (Chutes)** | GPU capacity for inference | Needs compute |
+| **SN27 (Nodexo)** | Customers for GPU capacity | Has GPUs |
+| **SN12 (ComputeHorde)** | Dynamic pricing for batch | Has compute |
+| **Validators** | Rebalance stake across subnets | Need coordination |
 
-**The result:**
-- Subnets overpay for resources
-- Capacity sits idle while buyers search
-- Multi-party optimizations never happen
-- No price discovery mechanism
+### Why Current Solutions Fail
 
----
+| Solution | Limitation |
+|----------|------------|
+| **Manual coordination** | Slow, doesn't scale, requires trust |
+| **Fixed pricing oracles** | No optimization, leaves value on table |
+| **Simple order books** | Two-party only, can't handle constraints |
+| **Cross-chain bridges** | Not Bittensor-native, high latency |
 
-## Worked Example: The Coordination Failure
+### The Result
 
-### Scenario
+**Billions in potential trade value trapped by friction.**
 
-**Monday morning:**
-- SN64 (Chutes) has a spike in inference requests. Needs 300 GPU-hours urgently.
-- SN27 (Nodexo) has 200 GPU-hours idle in EU region.
-- SN12 (Compute Horde) is running a batch job that could be deferred.
-
-**What happens today:**
-
-1. Chutes operator checks Nodexo's posted price: $1.70/hr
-2. Only 200 hours available — not enough
-3. Operator doesn't know Compute Horde could free up capacity
-4. Chutes provisions from external cloud at $2.40/hr for the remaining 100 hours
-5. Total cost: (200 × $1.70) + (100 × $2.40) = **$580**
-
-**What happens with NASH:**
-
-1. All three subnets have standing intents registered
-2. NASH sees the opportunity for three-way optimization
-3. Settlement computed:
-   - Chutes gets 300 GPU-hours total
-   - Nodexo provides 200 hours @ $1.55/hr
-   - Compute Horde defers batch job, frees 100 hours @ $1.40/hr + $30 deferral fee
-4. Total cost: (200 × $1.55) + (100 × $1.40) + $30 = **$480**
-
-**Savings:** $100 (17%) on a single trade. Multiply across thousands of daily inter-subnet transactions.
+Subnets that should be collaborating are siloed. The Bittensor economy can't reach its full potential without a settlement layer.
 
 ---
 
-## Why This Matters Now
+## Why NASH Solves This
 
-### Bittensor's Growth Creates Friction
+### 1. Mathematical Optimization
 
-As the network grows:
-- More subnets = more potential trading pairs
-- More specialization = more interdependence
-- More value flowing = higher stakes for efficiency
+NASH finds the **Nash Equilibrium** — the point where no party can improve their outcome without making another worse off. This isn't "good enough" matching. It's provably optimal.
 
-The coordination problem scales quadratically. Manual solutions don't.
+```
+Traditional:     A offers $X, B accepts/rejects
+NASH:           Find exact point where both cannot do better
+```
 
-### Subnet Interdependence is Increasing
+### 2. Multi-Party Trades
 
-| Pattern | Example | Frequency |
-|---------|---------|-----------|
-| Compute sourcing | Inference subnet buys GPU hours | Daily |
-| Capacity balancing | High-load subnet offloads to low-load | Hourly |
-| Resource triangulation | Three subnets with interlocking needs | Weekly |
-| Cross-stake optimization | Validators rebalancing positions | Continuous |
+NASH handles complex scenarios that simple matching can't:
 
-These patterns exist today. They're just handled inefficiently.
+- **Three-way trades** (A→B→C→A)
+- **Resource triangles** (swap excess for deficit)
+- **Deferred execution** (batch jobs + instant inference)
 
-### The Agentic Future Starts Here
+### 3. Sub-50ms Settlement
 
-If NASH works for subnet-to-subnet trades, it becomes the natural layer for:
-- Agent-to-agent transactions (as AI agents become economic actors)
-- Cross-chain settlement (as Bittensor integrates with other networks)
-- External liquidity (as traditional finance connects to decentralized compute)
+Fast enough for real-time resource allocation:
 
-Starting with concrete, measurable subnet trades builds the foundation.
+- Inference requests that need immediate GPU allocation
+- Live traffic routing between subnets
+- Emergency capacity rebalancing
 
----
+### 4. Trustless Verification
 
-## Competitive Landscape
+Pareto optimality is **mathematically verifiable**:
 
-### Why Not Simple Order Books?
-
-Order books work for:
-- Fungible assets (one GPU-hour = another GPU-hour)
-- Two-party trades (buyer meets seller)
-- Price-only matching (no complex constraints)
-
-Order books fail for:
-- Differentiated resources (EU GPU ≠ US GPU)
-- Multi-party optimization (three subnets with interlocking needs)
-- Constraint satisfaction (latency requirements, timing preferences)
-
-NASH handles the complex cases that order books can't.
-
-### Why Not Request-for-Quote (RFQ)?
-
-RFQ systems work for:
-- Low-frequency, high-value trades
-- Human-in-the-loop negotiation
-- Known counterparties
-
-RFQ fails for:
-- High-frequency resource allocation
-- Automated subnet operations
-- Network-wide price discovery
-
-NASH operates at machine speed with no human bottleneck.
-
-### Why Not Centralized Matching?
-
-Centralized matching (like a traditional exchange) works but introduces:
-- Single point of failure
-- Trust requirements
-- Rent extraction (exchange fees)
-- Opacity (matching logic is a black box)
-
-NASH is decentralized, trustless, and transparent. Matching logic is verified by validators.
+- Validators run baseline simulations
+- If any miner finds a better solution, inferior proposals score zero
+- No trusted intermediary needed
 
 ---
 
-## The NASH Advantage
+## Competing Solutions
 
-### Multi-Party Optimization
-
-Most settlement systems handle bilateral trades. NASH finds optimal settlements across 2, 3, 4+ parties simultaneously.
-
-**Value unlocked:** Trades that couldn't happen bilaterally become possible. The three-party compute example above saves 17% — that value was previously stranded.
-
-### Proof of Optimality
-
-Every NASH settlement is verified against the Pareto frontier. If a better deal exists, validators reject the proposal.
-
-**Value unlocked:** Participants know they got the best possible deal. No information asymmetry, no wondering if they left money on the table.
-
-### Latency
-
-Sub-50ms settlement enables real-time resource allocation.
-
-**Value unlocked:** Subnets can use NASH in their critical path. "I need compute now" gets answered now.
-
-### Complexity Rewards
-
-PMU incentivizes miners to solve hard problems, not just farm easy trades.
-
-**Value unlocked:** Edge cases get covered. The network handles the full spectrum of trade complexity.
+| Solution | Approach | NASH Advantage |
+|----------|----------|----------------|
+| **Manual subnet coordination** | Humans negotiate | 50ms vs. hours/days |
+| **Fixed pricing oracles** | Static prices | Dynamic optimization |
+| **Order book DEXs** | Bid/ask matching | Multi-party, constraints |
+| **Centralized exchanges** | Single counterparty | Trustless, permissionless |
 
 ---
 
-## Sustainability Model
+## Market Opportunity
 
-### Phase 1: Emission-Funded (Current)
+### Phase 1: Internal Economy (Now)
 
-Miners and validators earn through Bittensor emissions. No transaction fees required.
+Target: Bittensor subnets trading with each other
 
-**Sustainability:** Works as long as NASH provides value to the network (measured by root network support).
+- GPU allocation between Chutes + Nodexo
+- Compute scheduling with ComputeHorde
+- Stake rebalancing for validators
 
-### Phase 2: Hybrid (Growth)
+### Phase 2: AI Infrastructure (Near-term)
 
-As transaction volume grows, introduce optional priority fees:
-- Subnets can pay for faster settlement
-- Complex trades can pay for guaranteed solver attention
-- Fees distributed to miners proportional to work
+Target: Bittensor-adjacent AI services
 
-**Sustainability:** Transaction fees supplement emissions. Network becomes self-sustaining.
+- Compute marketplaces outside Bittensor
+- Inference routing across providers
+- Storage/bandwidth trading
 
-### Phase 3: Fee-Funded (Maturity)
+### Phase 3: Agent Economy (Long-term)
 
-At scale, transaction fees alone could sustain the network:
-- 0.1% settlement fee on trade value
-- At $10M daily volume = $10K daily fees
-- Distributed to miners and validators
+Target: Autonomous AI agents
 
-**Sustainability:** NASH operates independently of emission subsidies.
-
----
-
-## Risk Analysis
-
-### Bootstrapping Risk
-
-**Risk:** Not enough transaction volume to attract miners.
-
-**Mitigation:**
-- Start with guaranteed subnet partnerships (SN64, SN27, SN12)
-- Use synthetic challenges for miner training during low-volume periods
-- PMU rewards for solving any challenge, even synthetic
-
-### Complexity Risk
-
-**Risk:** Multi-party optimization is hard. Miners can't solve it fast enough.
-
-**Mitigation:**
-- Start with two-party trades, scale complexity gradually
-- 200ms response window is generous for well-implemented solvers
-- TWF rewards consistency over heroics
-
-### Adoption Risk
-
-**Risk:** Subnet operators don't integrate.
-
-**Mitigation:**
-- SDK makes integration trivial (Python library, Synapse-compatible)
-- Clear ROI case (17% savings in worked example)
-- Start with willing partners, prove value, expand
-
-### Competition Risk
-
-**Risk:** Another subnet builds a simpler solution.
-
-**Mitigation:**
-- NASH's multi-party optimization is genuinely hard to replicate
-- First-mover advantage in liquidity
-- Network effects compound (more participants = better matching)
+- Agent-to-agent resource trading
+- Self-negotiating contracts
+- Composable agent workflows
 
 ---
 
 ## Why Bittensor?
 
-NASH requires:
-
-| Requirement | Bittensor Solution |
-|-------------|-------------------|
-| Competitive solving | 256 miners racing for optimal solution |
-| Trustless verification | Validators confirm Pareto optimality |
-| Economic alignment | Miners earn more for harder problems |
-| Decentralized neutrality | No party controls the matching engine |
-| Native liquidity | TAO-denominated, subnet-native trades |
-
-Bittensor provides all of this. Building NASH elsewhere would require recreating the entire infrastructure.
+1. **Native integration** — Direct access to subnet intent vectors
+2. **Incentivized network** — Miners/validators rewarded for optimization
+3. **Trustless** — Pareto verification without trusted parties
+4. **Fast** — Sub-50ms settlement for real-time allocation
+5. **Battle-tested** — Built on proven Bittensor infrastructure
 
 ---
 
-## Success Metrics
+## Path to Long-Term Adoption
 
-### Phase 1: Proof of Concept
+```
+Phase 1          Phase 2           Phase 3
+   │                │                 │
+   ▼                ▼                 ▼
+┌──────┐        ┌──────┐         ┌──────┐
+│Internal│  ──▶ │AI Infra│  ──▶   │Agent │
+│Economy │       │Market  │        │Economy│
+└──────┘        └──────┘         └──────┘
 
-| Metric | Target |
-|--------|--------|
-| Subnet integrations | 3+ (SN64, SN27, SN12) |
-| Daily settlements | 100+ |
-| Average settlement time | <50ms |
-| Miner participation | 50+ active |
+Today          6-12 months      12-24 months
+```
 
-### Phase 2: Growth
+---
 
-| Metric | Target |
-|--------|--------|
-| Subnet integrations | 10+ |
-| Daily settlements | 10,000+ |
-| Daily volume (TAO equivalent) | 1,000+ TAO |
-| Multi-party settlements | 20%+ of volume |
+## Revenue Model
 
-### Phase 3: Scale
+NASH doesn't take a fee — it's a **Bittensor subnet** that emits TAO to participants. Value capture comes from:
 
-| Metric | Target |
-|--------|--------|
-| Daily settlements | 1M+ |
-| Daily volume | $1M+ |
-| External integrations | Agent frameworks, cross-chain |
-| Self-sustaining fees | Emissions optional |
+1. **TAO appreciation** — Subnet token value grows with usage
+2. **Integration fees** (optional) — Subnets pay for SDK support
+3. **Premium settlements** (optional) — Priority for urgent requests
+
+---
+
+## Risk Mitigation
+
+| Risk | Mitigation |
+|------|------------|
+| Low adoption | Partner with key subnets early |
+| Miner collusion | Anti-gaming mechanisms (see Section 1) |
+| Validator centralization | Stake-weighted, V-Trust system |
+| Subnet competition | First-mover advantage + network effects |
 
 ---

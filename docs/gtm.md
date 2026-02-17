@@ -1,4 +1,6 @@
-# Go-To-Market Strategy
+---
+
+## Go-To-Market Strategy
 
 ## Overview
 
@@ -14,7 +16,7 @@ NASH needs three constituencies to succeed: **subnets** (who provide liquidity),
 |--------|----------|----------|-----|
 | **SN64 (Chutes)** | Inference job routing | High | GPU demand, time-sensitive |
 | **SN27 (Nodexo)** | GPU capacity allocation | High | Supply side, needs customers |
-| **SN12 (ComputeHorde)** | Batch job scheduling | Medium | Flexible demand |
+| **SN12 (ComputeHorde)** | GPU compute for validation | Medium | Flexible demand |
 | **SN62 (Ridges)** | Autonomous AI coding agents | Low | Complementary |
 
 ### Early Validator Targets
@@ -36,39 +38,17 @@ NASH needs three constituencies to succeed: **subnets** (who provide liquidity),
 - Show value with custom use case analysis
 - Offer free integration support
 
-**Messaging:**
-> "Want to reduce your GPU costs by 15%? NASH finds optimal compute deals automatically."
+**Messaging:** *"Want to reduce your GPU costs by 15%? NASH finds optimal compute deals automatically."*
 
 ### 2. Bittensor Ecosystem
 
-**Channels:**
-- Discord (#subnets, #validators)
-- Telegram groups
-- GitHub discussions
-- TAO.app subnet listings
+**Channels:** Discord (#subnets, #validators), Telegram groups, GitHub discussions, TAO.app subnet listings
 
-**Content:**
-- Technical deep-dives
-- Tutorial videos
-- Integration guides
+**Content:** Technical deep-dives, Tutorial videos, Integration guides
 
 ### 3. Developer SDK
 
-**Priority:** Ship Python SDK first.
-
-```python
-# Subnet integration example
-from nash import SettlementClient
-
-client = SettlementClient(subnet_id=64)
-
-# Request compute
-settlement = client.request_compute(
-    quantity=200,  # GPU-hours
-    max_price=1.80,
-    latency_requirement_ms=50
-)
-```
+Ship Python SDK first with example code for compute settlement requests.
 
 ---
 
@@ -102,26 +82,11 @@ settlement = client.request_compute(
 
 ## Launch Timeline
 
-### Phase 1: Beta (Months 1-3)
+**Phase 1: Beta (Months 1-3)** — 5-10 partner subnets, 50+ miners, 10+ validators, synthetic challenges only
 
-- 5-10 partner subnets
-- 50+ miners
-- 10+ validators
-- Synthetic challenges only
+**Phase 2: Public Testnet (Months 3-6)** — Open registration, real subnet integration, 200+ miners, 30+ validators
 
-### Phase 2: Public Testnet (Months 3-6)
-
-- Open registration
-- Real subnet integration begins
-- 200+ miners
-- 30+ validators
-
-### Phase 3: Mainnet (Months 6-12)
-
-- Full production
-- 500+ miners
-- 50+ validators
-- First real settlements
+**Phase 3: Mainnet (Months 6-12)** — Full production, 500+ miners, 50+ validators, first real settlements
 
 ---
 
@@ -152,17 +117,9 @@ settlement = client.request_compute(
 
 ## Team & Resources
 
-### What We Bring
+**What We Bring:** Deep expertise in mechanism design, Bittensor ecosystem connections, technical ability to ship
 
-- Deep expertise in mechanism design
-- Bittensor ecosystem connections
-- Technical ability to ship
-
-### What We Need
-
-- Subnet partnership leads
-- Developer relations
-- Marketing support
+**What We Need:** Subnet partnership leads, Developer relations, Marketing support
 
 ---
 
@@ -172,8 +129,7 @@ settlement = client.request_compute(
 
 We're building the infrastructure for AI agents to trade resources autonomously. Join us.
 
-### Next Steps
-
+**Next Steps:**
 1. **Subnets:** Talk to us about integration
 2. **Miners:** Start practicing on synthetic challenges
 3. **Validators:** Reach out for early access

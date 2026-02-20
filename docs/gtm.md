@@ -58,12 +58,6 @@ settlement = client.request_compute(
 )
 ```
 
-### 3. Hackathons & Competitions
-
-- Bittensor Ideathon
-- Build challenges with prizes
-- Demo days with protocol teams
-
 ---
 
 ## 3. Incentives for Early Participation

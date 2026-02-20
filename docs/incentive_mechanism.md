@@ -95,26 +95,9 @@ Optimal miner strategy:
 
 Optimal validator strategy:
 
-1. **Accurate verification** — V-Trust determines dividend share
-2. **Consensus alignment** — Outlier scores penalized
-3. **Challenge diversity** — Novel challenge types = PMU + V-Trust boost
-4. **Train the model** — Generate synthetic challenges to build commitment model
-5. **Stake up** — More stake = more voting power in consensus
-
-### V-Trust (Validator Reputation)
-
-```python
-def calculate_v_trust(validator):
-    V_TRUST = (
-        0.4 * consensus_accuracy +   # Agrees with majority
-        0.3 * speed_score +          # Verification speed
-        0.3 * challenge_diversity     # Novel challenge types
-    )
-    return V_TRUST
-
-# Quadratic voting power
-validator.voting_power = validator.stake ** 0.5 * V_TRUST
-```
+1. **Train the model** — Generate synthetic challenges to build commitment model
+2. **Collect feedback** — Learn from post-settlement reveals
+3. **Stake up** — More stake = more emissions
 
 ### Validator Training Pipeline (Key Innovation)
 
@@ -148,28 +131,12 @@ After a settlement executes, **agents reveal their actual outcomes**. Validators
        ↓
 3. Validators compare: estimate vs. revealed
        ↓
-4. Accurate validators → V-Trust boost
-       ↓
-5. Model improves via feedback loop
-```
-
-**How to Incentivize:**
-
-```python
-def calculate_validator_verification_bonus(validator):
-    # How close was estimate to revealed truth?
-    estimate_accuracy = validator.estimate_vs_revealed_avg
-    
-    # Bonus for accurate post-hoc verification
-    verification_bonus = 1.0 + (estimate_accuracy ** 2) * 0.5
-    
-    return verification_bonus
+4. Model improves via feedback loop
 ```
 
 **Why This Works:**
 - **Ground truth:** Agents reveal actual utility after settlement
 - **Feedback loop:** Validators learn from every real settlement
-- **Skin in the game:** Inaccurate estimates = V-Trust decay
 - **Continuous improvement:** Model gets better over time
 - **Agentic economy:** This is the foundation — agents building trust through verified settlements
 
@@ -230,7 +197,7 @@ if solver_count > 100 and complexity < 2.0:
 ### 5. Validator Collusion Prevention
 
 - Random subset of validator scores published before consensus
-- Outlier validators lose V-Trust
+- Outlier validators penalized
 - Stake-weighted voting makes colluding expensive (need majority stake)
 
 ---
@@ -368,16 +335,3 @@ final_score = Q × PMU × TWF × SPF
 | **Agent** | Submit intent | Preferences | Commitment vector |
 | **Validator** | Orchestrate | Commitments | Weights |
 | **Miner** | Solve | Challenge | Equilibrium proposal |
-
----
-
-## Summary
-
-| Component | Value |
-|-----------|-------|
-| Settlement time | <50ms |
-| Max PMU | 5.0x |
-| TWF range | 0.5 - 1.5x |
-| Validator stake | ≥1000 τ |
-| Agent capacity | 256 UIDs (64V + 192M) |
-| Proof type | PPAD-complete + learned estimation |

@@ -1,21 +1,21 @@
-## Go-To-Market Strategy
+# Go-To-Market Strategy
 
 ## Overview
 
-NASH needs three constituencies to succeed: **subnets** (who provide liquidity), **miners** (who find equilibria), and **validators** (who run the mechanism). Our GTM strategy addresses each.
+NASH needs three constituencies to succeed: **agents** (who provide liquidity), **miners** (who find equilibria), and **validators** (who run the mechanism). Our GTM strategy addresses each.
 
 ---
 
-## Initial Target Users & Use Cases
+## 1. Initial Target Users & Use Cases
 
-### Priority Subnets
+### Priority Agents
 
-| Subnet | Use Case | Priority | Why |
-|--------|----------|----------|-----|
-| **SN64 (Chutes)** | Inference job routing | High | GPU demand, time-sensitive |
-| **SN27 (Nodexo)** | GPU capacity allocation | High | Supply side, needs customers |
-| **SN12 (ComputeHorde)** | GPU compute for validation | Medium | Flexible demand |
-| **SN62 (Ridges)** | Autonomous AI coding agents | Low | Complementary |
+| Agent Type | Use Case | Priority | Why |
+|-----------|----------|----------|-----|
+| **Inference Agents** | Job routing and pricing | High | High demand, time-sensitive |
+| **Compute Agents** | Capacity allocation | High | Supply side, needs customers |
+| **Storage Agents** | Data placement | Medium | Growing demand |
+| **Coordination Agents** | Task routing | Low | Complementary |
 
 ### Early Validator Targets
 
@@ -25,32 +25,48 @@ NASH needs three constituencies to succeed: **subnets** (who provide liquidity),
 
 ---
 
-## Distribution & Growth Channels
+## 2. Distribution & Growth Channels
 
-### 1. Direct Subnet Partnerships
+### 1. Bittensor Ecosystem
 
-**Strategy:** Pitch directly to subnet teams.
+**Channels:**
+- Discord (#subnets, #validators)
+- Telegram groups
+- GitHub discussions
+- TAO.app subnet listings
 
-**Outreach:**
-- Identify subnets with resource trading needs
-- Show value with custom use case analysis
-- Offer free integration support
+**Content:**
+- Technical deep-dives
+- Tutorial videos
+- Integration guides
 
-**Messaging:** *"Want to reduce your GPU costs by 15%? NASH finds optimal compute deals automatically."*
+### 2. Developer SDK
 
-### 2. Bittensor Ecosystem
+**Priority:** Ship Python SDK first.
 
-**Channels:** Discord (#subnets, #validators), Telegram groups, GitHub discussions, TAO.app subnet listings
+```python
+# Agent integration example
+from nash import SettlementClient
 
-**Content:** Technical deep-dives, Tutorial videos, Integration guides
+client = SettlementClient(agent_id="my_agent")
 
-### 3. Developer SDK
+# Request compute
+settlement = client.request_compute(
+    quantity=200,          # GPU-hours
+    max_price=1.80,
+    latency_requirement_ms=50
+)
+```
 
-Ship Python SDK first with example code for compute settlement requests.
+### 3. Hackathons & Competitions
+
+- Bittensor Ideathon
+- Build challenges with prizes
+- Demo days with protocol teams
 
 ---
 
-## Incentives for Early Participation
+## 3. Incentives for Early Participation
 
 ### For Miners
 
@@ -64,11 +80,10 @@ Ship Python SDK first with example code for compute settlement requests.
 
 | Incentive | Value |
 |-----------|-------|
-| V-Trust boost | 1.5x for first 30 days |
 | Governance rights | Protocol upgrade voting |
 | Priority emissions | First 90 days |
 
-### For Subnets
+### For Agents
 
 | Incentive | Value |
 |-----------|-------|
@@ -78,72 +93,46 @@ Ship Python SDK first with example code for compute settlement requests.
 
 ---
 
-## Launch Timeline
+## 4. Launch Timeline
 
-**Phase 1: Beta (Months 1-3)** — 5-10 partner subnets, 50+ miners, 10+ validators, synthetic challenges only
+### Phase 1: Beta (Months 1-3)
 
-**Phase 2: Public Testnet (Months 3-6)** — Open registration, real subnet integration, 200+ miners, 30+ validators
+- 10+ partner agents
+- 50+ miners
+- 10+ validators
+- Synthetic challenges only
 
-**Phase 3: Mainnet (Months 6-12)** — Full production, 500+ miners, 50+ validators, first real settlements
+### Phase 2: Public Testnet (Months 3-6)
+
+- Open registration
+- Real agent integration begins
+- 200+ miners
+- 30+ validators
+
+### Phase 3: Mainnet (Months 6-12)
+
+- Full production
+- 500+ miners
+- 50+ validators
+- First real settlements
 
 ---
 
-## Metrics for Success
+## 5. Metrics for Success
 
 | Metric | Target (Month 12) |
 |--------|-------------------|
 | Daily active settlements | 10,000+ |
 | Average settlement time | <50ms |
-| Integrated subnets | 20+ |
+| Integrated agents | 100+ |
 | Total value settled (TVS) | $1M+ daily |
 | Miner count | 500+ |
 | Validator count | 50+ |
 
 ---
 
-## Competitive Positioning
-
-| Feature | NASH | Manual | Oracles | DEXs |
-|---------|------|--------|---------|------|
-| Speed | 50ms | Hours | Minutes | Seconds |
-| Optimization | Mathematical | None | None | Basic |
-| Multi-party | Yes | No | No | No |
-| Trustless | Yes | No | Partial | Yes |
-| Bittensor-native | Yes | No | No | No |
-
----
-
-## Team & Resources
-
-**What We Bring:** Deep expertise in mechanism design, Bittensor ecosystem connections, technical ability to ship
-
-**What We Need:** Subnet partnership leads, Developer relations, Marketing support
-
----
-
-## Call to Action
+## 6. Call to Action
 
 > **"The agentic economy is coming. NASH is the settlement layer."**
 
 We're building the infrastructure for AI agents to trade resources autonomously. Join us.
-
-**Next Steps:**
-1. **Subnets:** Talk to us about integration
-2. **Miners:** Start practicing on synthetic challenges
-3. **Validators:** Reach out for early access
-
----
-
-## Summary
-
-| Component | Key Metric |
-|-----------|------------|
-| Settlement time | <50ms |
-| Max PMU | 5.0x |
-| TWF range | 0.5 - 1.5x |
-| Validator stake | ≥1000 τ |
-| Subnet capacity | 256 UIDs (64V + 192M) |
-| Target subnets | 20+ by Month 12 |
-| Target TVS | $1M+ daily |
-
----

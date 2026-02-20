@@ -1,201 +1,116 @@
 # Validator Design
 
-## What Validators Do
+## Overview
 
 Validators are the **orchestrators** of the NASH network. They don't find equilibria — they **verify** that miners did, and ensure the incentive mechanism runs fairly.
 
-### The Core Task
-
-```
-INPUT:  Miner settlement proposals
-        (from multiple miners)
-
-OUTPUT: Weighted scores for each miner
-        (submitted to blockchain)
-```
-
-Validators run the incentive mechanism — generating challenges, scoring responses, and maintaining network integrity.
+The key innovation: Validators cannot verify optimality with incomplete information. Instead, they **learn to estimate** optimality via a model trained on synthetic data, then improve via post-settlement feedback.
 
 ---
 
-## Validator Tasks
+## 1. Validator Tasks
 
-### 1. Intent Collection
-- Receive intents from subnets via API/SDK
-- Aggregate preferences into challenges
-- Format for miner consumption
+### Core Responsibilities
 
-### 2. Challenge Generation
-- Create synthetic economic challenges (before real subnets join)
-- Mix synthetic + real intents
-- Ensure challenge diversity
+1. **Intent Collection**
+   - Receive intents from agents via API/SDK
+   - Aggregate preferences into challenges
+   - Format for miner consumption
 
-### 3. Miner Querying
-- Broadcast challenges to all active miners
-- Collect responses within time window
-- Handle timeouts gracefully
+2. **Challenge Generation**
+   - Create synthetic economic challenges (before real agents join)
+   - Mix synthetic + real intents
+   - Ensure challenge diversity
 
-### 4. Response Validation
-- Check for NaN/Inf values
-- Verify valid shapes
-- Detect suspicious patterns (pre-computed, etc.)
+3. **Miner Querying**
+   - Broadcast challenges to all active miners
+   - Collect responses within time window
+   - Handle timeouts gracefully
 
-### 5. Quality Scoring
-- Run baseline simulations
-- Compare miner solutions to ground truth
-- Calculate fidelity scores
+4. **Response Validation**
+   - Check for NaN/Inf values
+   - Verify valid shapes
+   - Detect suspicious patterns (pre-computed, etc.)
 
-### 6. Consensus & Weight Setting
-- Aggregate scores across validators (stake-weighted)
-- Submit final weights to blockchain
+5. **Quality Scoring**
+   - Run baseline simulations (training phase)
+   - Compare miner solutions to model estimates (production)
+   - Calculate fidelity scores
 
----
+6. **Consensus & Weight Setting**
+   - Aggregate scores across validators (stake-weighted)
+   - Submit final weights to blockchain
 
-## The Validator Pipeline
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    VALIDATOR PIPELINE                            │
-├─────────────────────────────────────────────────────────────────┤
-│  1. INTENT        Collect intents from subnets                │
-│     COLLECTION     Aggregate into challenges                    │
-├─────────────────────────────────────────────────────────────────┤
-│  2. CHALLENGE     Generate synthetic challenges               │
-│     GENERATION     Mix real + synthetic intents                │
-│                   Ensure diversity                              │
-├─────────────────────────────────────────────────────────────────┤
-│  3. QUERY         Broadcast to all active miners              │
-│                   Collect responses                            │
-│                   Handle timeouts                              │
-├─────────────────────────────────────────────────────────────────┤
-│  4. VALIDATION    Check for NaN/Inf                           │
-│                   Verify shapes                                 │
-│                   Detect suspicious patterns                   │
-├─────────────────────────────────────────────────────────────────┤
-│  5. SCORING       Run baseline simulations                    │
-│                   Compare to ground truth                      │
-│                   Calculate fidelity scores                    │
-├─────────────────────────────────────────────────────────────────┤
-│  6. CONSENSUS     Aggregate (stake-weighted)                  │
-│                   Set weights on blockchain                    │
-└─────────────────────────────────────────────────────────────────┘
-```
+7. **Post-Settlement Verification**
+   - Collect agent feedback after settlement
+   - Compare estimates to revealed outcomes
+   - Update model based on ground truth
 
 ---
 
-## Scoring and Evaluation Methodology
+## 2. Scoring and Evaluation Methodology
 
-### Step 1: Generate Challenge
-Validator creates a challenge representing a potential settlement scenario.
+### The Core Challenge
 
-```json
-{
-  "challenge_id": "0xabc123",
-  "parties": [...],
-  "expected_optimal": {...},  // Known for synthetic challenges
-  "difficulty": "medium"
-}
-```
+Validators see only **commitments**, not full preferences. They cannot compute the true optimal.
 
-### Step 2: Query Miners
-Broadcast to all active miner axons, collect responses within 5-second window.
+**Solution:** Train a model to estimate optimality, then improve via feedback.
 
-### Step 3: Validate Responses
-```python
-def validate_response(response):
-    if response.manifold is None:
-        return False
-    if torch.isnan(response.manifold).any():
-        return False
-    if torch.isinf(response.manifold).any():
-        return False
-    if response.equilibrium.numel() != 2:
-        return False
-    return True
-```
-
-### Step 4: Calculate Fidelity
-Run baseline simulation to determine ground truth, compare miner solutions.
+### Step 1: Training Phase (Synthetic Challenges)
 
 ```python
-def calculate_fidelity(miner_solution, ground_truth):
-    mse = ((miner_solution - ground_truth) ** 2).mean()
-    fidelity = 1.0 - mse  # Higher is better
-    return fidelity
-```
-
-### Step 5: Compute Consensus
-Stake-weighted average across all validators.
-
-```python
-def weighted_consensus(miner_scores, validators):
-    weighted_scores = []
-    for v in validators:
-        weight = v.stake * v.v_trust
-        for miner, score in v.scores.items():
-            weighted_scores.append((miner, score * weight))
+def validate_training(settlement, commitments, full_preferences):
+    # Validator knows the answer
+    true_optimal = solve_with_full_info(full_preferences)
+    distance = compute_distance(settlement, true_optimal)
     
-    # Aggregate by miner
-    final = {}
-    for miner, weighted in weighted_scores:
-        if miner not in final:
-            final[miner] = []
-        final[miner].append(weighted)
+    # Train model: commitment → optimal
+    model.train(commitments, true_optimal)
     
-    return {m: sum(s)/len(s) for m, s in final.items()}
+    return distance < threshold
 ```
 
-### Step 6: Set Weights
-Submit to blockchain.
-
----
-
-## V-Trust (Validator Reputation)
-
-Validators have their own reputation system:
+### Step 2: Production Phase (Real Challenges)
 
 ```python
-def calculate_v_trust(validator):
-    V_TRUST = (
-        0.4 * consensus_accuracy +   # Agrees with majority
-        0.3 * speed_score +          # Verification speed
-        0.3 * challenge_diversity     # Novel challenge types
-    )
-    return V_TRUST
-
-# Quadratic voting power
-validator.voting_power = validator.stake ** 0.5 * V_TRUST
+def validate_production(settlement, commitments):
+    # Use trained model to estimate optimality
+    estimated_optimal = model.predict(commitments)
+    
+    # Compare miner solution to estimate
+    distance = compute_distance(settlement, estimated_optimal)
+    
+    return distance < threshold
 ```
 
-| Factor | Weight | Description |
-|--------|--------|-------------|
-| Consensus Accuracy | 40% | How often validator agrees with majority |
-| Speed | 30% | Verification time vs. threshold |
-| Diversity | 30% | Novel challenge types introduced |
+### Step 3: Post-Settlement Feedback
 
-### Why V-Trust Matters
-
-- **Higher dividends** — Quadratic bonus for proven validators
-- **More voting power** — Stake × V-Trust in consensus
-- **Network quality** — Rewards accurate, fast, diverse verification
+```python
+def verify_post_settlement(settlement, revealed_outcomes):
+    # Agents reveal actual results
+    for agent, revealed in revealed_outcomes.items():
+        accuracy = compute_accuracy(validator.estimate[agent], revealed)
+        validator.update_model(accuracy)
+```
 
 ---
 
-## Validator Dividends
+## 3. Validator Emissions
 
-Validators earn from network emissions:
+Validators earn from network emissions based on their **stake only**:
 
 ```python
 def calculate_validator_dividends(validator):
+    # Emissions determined by stake (Bittensor consensus)
     base = validator.stake / total_network_stake
-    trust_bonus = validator.v_trust ** 2      # Quadratic!
-    diversity_bonus = 1.0 + (validator.unique_challenges / 10)
-    return base * trust_bonus * diversity_bonus
+    return base
 ```
+
+Note: Validator emissions are fixed by Bittensor consensus. No additional bonuses or multipliers apply.
 
 ---
 
-## Evaluation Cadence
+## 4. Evaluation Cadence
 
 | Metric | Value |
 |--------|-------|
@@ -203,27 +118,78 @@ def calculate_validator_dividends(validator):
 | Response window | 5 seconds |
 | Weight updates | Every 100 blocks (~20 min) |
 | Consensus calculation | Real-time aggregation |
+| Post-settlement feedback | After each settlement |
 
 ---
 
-## Validator Incentive Alignment
+## 5. Validator Incentive Alignment
 
 Optimal validator strategy:
 
-1. **Accurate verification** — V-Trust determines dividend share
-2. **Consensus alignment** — Outlier scores penalized
-3. **Challenge diversity** — Novel challenge types = new PMU opportunities + V-Trust boost
-4. **Fast baseline simulation** — Required to judge within time window
-5. **Stake up** — Higher stake = more voting power in consensus
+1. **Train the model** — Generate synthetic challenges to build commitment model
+2. **Collect feedback** — Learn from post-settlement reveals
+3. **Stake up** — More stake = more emissions
 
 ---
 
-## Requirements for Validators
+## 6. Requirements for Validators
 
 | Requirement | Value |
 |-------------|-------|
 | Minimum stake | 1000 τ (including delegated) |
 | Permit | Must be in top 64 by emissions |
 | Hardware | Standard Bittensor validator specs |
+| Model training | Must train commitment model before production |
 
 ---
+
+## 7. The Validator Pipeline
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    VALIDATOR PIPELINE                            │
+├─────────────────────────────────────────────────────────────────┤
+│  1. INTENT        Collect intents from agents                 │
+│     COLLECTION     Aggregate into challenges                    │
+├─────────────────────────────────────────────────────────────────┤
+│  2. CHALLENGE     Generate synthetic challenges               │
+│     GENERATION     Mix real + synthetic intents                │
+│                   Ensure diversity                             │
+├─────────────────────────────────────────────────────────────────┤
+│  3. QUERY         Broadcast to all active miners              │
+│                   Collect responses                            │
+│                   Handle timeouts                             │
+├─────────────────────────────────────────────────────────────────┤
+│  4. VALIDATION    Check for NaN/Inf                          │
+│                   Verify shapes                                │
+│                   Detect suspicious patterns                   │
+├─────────────────────────────────────────────────────────────────┤
+│  5. SCORING       Use model to estimate optimality           │
+│                   Compare miner solutions to estimate          │
+│                   Calculate fidelity scores                   │
+├─────────────────────────────────────────────────────────────────┤
+│  6. CONSENSUS     Aggregate (stake-weighted)                  │
+│                   Set weights on blockchain                    │
+├─────────────────────────────────────────────────────────────────┤
+│  7. FEEDBACK      Collect post-settlement reveals             │
+│                   Update model with ground truth               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 8. Key Innovation: Learnable Validation
+
+### The Problem
+- Validators see only commitments (compressed preferences)
+- Cannot compute true optimal without full information
+- Traditional verification fails
+
+### The Solution
+1. **Training:** Generate synthetic challenges where answer is known
+2. **Learning:** Train model: commitments → optimal
+3. **Production:** Use model to estimate optimality
+4. **Feedback:** Improve model via post-settlement reveals
+
+### The Kernel
+> *"Can validators learn a model that estimates optimality from commitments, trained on cases where they knew the answer — and then improve that model every time a settlement reveals the truth?"*

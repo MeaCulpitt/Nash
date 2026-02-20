@@ -1,27 +1,27 @@
-# NASH: Inter-Subnet Settlement Layer
+# NASH: Agent-to-Agent Settlement Layer
 
-NASH is a Bittensor subnet that optimizes resource exchange between subnets. When compute needs to be bought, inference jobs need to be routed, or resources need to be swapped, NASH finds the mathematically optimal deal and settles it in milliseconds.
+NASH is a Bittensor subnet that optimizes resource exchange between autonomous AI agents. When compute needs to be bought, inference jobs need to be routed, or resources need to be swapped, NASH finds the mathematically optimal deal and settles it in milliseconds.
 
-Today: the settlement layer for Bittensor's internal economy.
+Today: the settlement layer for AI agents within Bittensor.
 Tomorrow: the settlement layer for autonomous agents everywhere.
 
 ---
 
 ## The Problem
 
-Bittensor subnets increasingly need to trade with each other:
+The **agentic economy** is coming. Autonomous AI agents will need to trade resources with each other:
 
-- **SN64 (Chutes)** runs inference jobs but needs to source GPU capacity
-- **SN27 (Compute)** has GPU capacity but needs customers
-- **SN12 (ComputeHorde)** has batch compute but needs to price it dynamically
-- Validators stake across subnets and need to rebalance positions
+- **Inference Agents** run AI workloads but need GPU capacity
+- **Compute Agents** have GPUs but need customers
+- **Storage Agents** have space but need bandwidth
+- **Coordination Agents** manage tasks but need execution capacity
 
 Right now, these trades happen through:
 - Manual coordination (slow, doesn't scale)
 - Fixed pricing (leaves value on the table)
 - Simple order books (can't handle complex multi-party swaps)
 
-**The result:** Billions in potential trade value trapped by friction. Subnets that should be collaborating are siloed.
+**The result:** Billions in potential trade value trapped by friction. Agents that should be collaborating are siloed.
 
 ---
 
@@ -34,14 +34,14 @@ NASH finds the optimal trade between parties with competing interests.
 │                        NASH SETTLEMENT                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│   SN64 (Chutes)              NASH               SN27 (Compute)  │
-│   "Need 100 GPU-hrs"   ──▶  Optimal   ◀──   "Have 500 GPU-hrs"  │
-│   "Max $1.80/hr"            Match            "Min $1.40/hr"     │
-│   "Need <50ms latency"                       "Located in EU"    │
+│   Inference Agent            NASH              Compute Agent     │
+│   "Need 100 GPU-hrs"   ──▶  Optimal   ◀──   "Have 500 GPU-hrs" │
+│   "Max $1.80/hr"            Match            "Min $1.40/hr"   │
+│   "Need <50ms latency"                        "Located in EU"  │
 │                                                                  │
 │                         Settlement:                              │
 │                         150 GPU-hrs @ $1.62/hr                  │
-│                         47ms round-trip                          │
+│                         47ms round-trip                         │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -50,21 +50,21 @@ NASH finds the optimal trade between parties with competing interests.
 
 ---
 
-## Worked Example: Cross-Subnet Compute Trade
+## Worked Example: Agent-to-Agent Compute Trade
 
 ### Scenario
 
-**SN64 (Chutes)** has a surge in inference requests. Needs GPU capacity now.
+**Inference Agent** has a surge in requests. Needs GPU capacity now.
 
-**SN27 (Compute)** has idle GPUs in three regions. Wants to maximize utilization.
+**Compute Agent** has idle GPUs in three regions. Wants to maximize utilization.
 
-**SN12 (ComputeHorde)** has batch jobs that could be delayed if the price is right.
+**Storage Agent** has batch jobs that could be deferred if the price is right.
 
 ### Traditional Approach
 
-1. Chutes operator manually checks Compute pricing — $1.50/hr posted
+1. Inference operator manually checks Compute pricing — $1.50/hr posted
 2. Accepts or rejects based on fixed price
-3. No visibility into ComputeHorde's flexibility
+3. No visibility into Storage's flexibility
 4. Three-way optimization never happens
 
 **Time:** Minutes. **Outcome:** Suboptimal.
@@ -72,13 +72,13 @@ NASH finds the optimal trade between parties with competing interests.
 ### NASH Approach
 
 1. **Intent submission (automated):**
-   - Chutes: "Need 200 GPU-hrs, priority high, max $2.00, prefer <30ms"
+   - Inference: "Need 200 GPU-hrs, priority high, max $2.00, prefer <30ms"
    - Compute: "Have 300 GPU-hrs available, min $1.20, flexible timing"
-   - ComputeHorde: "Running batch job, can defer 4 hours for $0.30/hr rebate"
+   - Storage: "Running batch job, can defer 4 hours for $0.30/hr rebate"
 
 2. **NASH miners compute optimal settlement:**
-   - Chutes gets 200 GPU-hrs from Compute @ $1.55/hr
-   - ComputeHorde defers batch job, receives $60 rebate
+   - Inference gets 200 GPU-hrs from Compute @ $1.55/hr
+   - Storage defers batch job, receives $60 rebate
    - Compute fills otherwise-idle capacity
    - All parties better off than bilateral negotiation
 
@@ -90,25 +90,22 @@ NASH finds the optimal trade between parties with competing interests.
 
 ---
 
-## Why This Matters for Bittensor
+## Key Innovation: Learnable Validation
 
-### Today: Internal Liquidity
+### The Core Problem
 
-Bittensor is becoming an economy, not just a network. Subnets are:
-- Buying compute from each other
-- Routing jobs based on capacity and pricing
-- Staking and rebalancing across the metagraph
+Validators see only **commitments** (compressed preferences), not full information. They cannot compute the true optimal.
 
-This happens inefficiently today. NASH makes it efficient.
+### The Solution
 
-### Tomorrow: External Liquidity
+Validators **learn to estimate** optimality:
 
-Once NASH proves itself on Bittensor-native trades, it becomes the natural settlement layer for:
-- AI agents trading resources
-- Autonomous systems negotiating contracts
-- Any multi-party optimization problem
+1. **Training:** Generate synthetic challenges where the answer is known
+2. **Learning:** Train model: commitments → optimal
+3. **Production:** Use model to estimate optimality
+4. **Feedback:** Improve model via post-settlement reveals
 
-The "agentic economy" is coming. NASH will be ready because it's battle-tested on real volume.
+> *"Can validators learn a model that estimates optimality from commitments, trained on cases where they knew the answer — and then improve that model every time a settlement reveals the truth?"*
 
 ---
 
@@ -118,17 +115,17 @@ The "agentic economy" is coming. NASH will be ready because it's battle-tested o
 ┌─────────────────────────────────────────────────────────────────┐
 │                      THE NASH PIPELINE                           │
 ├─────────────────────────────────────────────────────────────────┤
-│  1. INTENT          Subnets/agents submit preferences           │
-│                     Price range, quantity, constraints          │
+│  1. INTENT          Agents submit preferences                    │
+│                     Price range, quantity, constraints           │
 ├─────────────────────────────────────────────────────────────────┤
-│  2. DISCOVERY       Miners compete to find optimal settlement   │
-│                     Game-theoretic search, <50ms                │
+│  2. DISCOVERY       Miners compete to find optimal settlement  │
+│                     Game-theoretic search, <50ms                 │
 ├─────────────────────────────────────────────────────────────────┤
-│  3. VERIFICATION    Validators confirm Pareto optimality        │
-│                     No better deal exists                       │
+│  3. VERIFICATION    Validators estimate Pareto optimality      │
+│                     Using learned model                          │
 ├─────────────────────────────────────────────────────────────────┤
-│  4. SETTLEMENT      Trade executes automatically                │
-│                     Trustless, mathematically verified          │
+│  4. SETTLEMENT      Trade executes automatically               │
+│                     Trustless, mathematically verified           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -138,11 +135,11 @@ The "agentic economy" is coming. NASH will be ready because it's battle-tested o
 
 ### Multi-Party Optimization
 
-Two-party trades are easy. NASH shines when three or more parties have interlocking needs — compute swaps, resource triangles, portfolio rebalancing.
+Two-party trades are easy. NASH shines when three or more agents have interlocking needs — compute swaps, resource triangles, portfolio rebalancing.
 
 ### Sub-50ms Settlement
 
-Fast enough for real-time resource allocation. Validators and subnet orchestrators can use NASH in their critical path.
+Fast enough for real-time resource allocation. Agents can use NASH in their critical path.
 
 ### Proof of Optimality
 
@@ -152,48 +149,51 @@ Every settlement is verified against the Pareto frontier. If a better deal exist
 
 Miners earn more for solving harder problems (Proof of Marginal Utility). The network naturally spreads to cover edge cases, not just high-volume commodity trades.
 
+### Learned Validation
+
+Validators cannot verify optimality with incomplete information. Instead, they learn to estimate it — trained on synthetic data, improved via post-settlement feedback.
+
 ---
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
-| [Incentive & Mechanism Design](./docs/incentive_mechanism.md) | Scoring formula, PMU/TWF multipliers, anti-gaming |
+| [Incentive & Mechanism Design](./docs/incentive_mechanism.md) | Scoring formula, PMU/TWF, learned validation |
 | [Miner Architecture](./docs/miner.md) | Equilibrium discovery, input/output spec |
-| [Validator Architecture](./docs/validator.md) | Pareto audits, verification methodology |
+| [Validator Architecture](./docs/validator.md) | Model-based verification, training pipeline |
 | [Business Logic](./docs/business_logic.md) | Problem statement, competitive landscape |
-| [Go-To-Market](./docs/gtm.md) | Subnet partnerships, adoption path |
+| [Go-To-Market](./docs/gtm.md) | Agent partnerships, adoption path |
 
 ---
 
 ## Initial Integration Targets
 
-| Subnet | Use Case | Status |
-|--------|----------|--------|
-| SN64 (Chutes) | Inference job routing and pricing | Target |
-| SN27 (Nodexo) | GPU capacity allocation | Target |
-| SN12 (Compute Horde) | Batch job scheduling | Target |
-| SN62 (Ridges) | Task routing and settlement | Target |
-| Cross-validator | Stake rebalancing | Future |
+| Agent Type | Use Case | Status |
+|------------|----------|--------|
+| Inference Agents | Job routing and pricing | Target |
+| Compute Agents | GPU capacity allocation | Target |
+| Storage Agents | Data placement | Target |
+| Coordination Agents | Task routing | Target |
 
 ---
 
-## For Subnet Owners
+## For Agents
 
 Integrate NASH to:
 - Optimize resource acquisition costs
 - Access network-wide liquidity
 - Automate bilateral agreements
-- Enable complex multi-subnet workflows
+- Enable complex multi-agent workflows
 
-**NASH SDK** (Python) for Synapse integration coming soon.
+**NASH SDK** (Python) for agent integration coming soon.
 
 ---
 
 ## For Miners
 
 Earn TAO by:
-1. Ingesting subnet intent vectors
+1. Ingesting agent intent vectors
 2. Computing optimal settlements
 3. Submitting verified proposals
 4. Maintaining <50ms response times
@@ -205,18 +205,18 @@ Higher rewards for complex, multi-party trades.
 ## For Validators
 
 Earn dividends by:
-1. Generating economic challenges
-2. Verifying Pareto optimality
-3. Maintaining consensus accuracy
-4. Running anti-gaming audits
+1. Training commitment model (synthetic challenges)
+2. Using model to estimate optimality (production)
+3. Collecting post-settlement feedback
+4. Improving model over time
 
 ---
 
 ## The Vision
 
-**Phase 1:** Inter-subnet settlement for Bittensor (the internal economy)
+**Phase 1:** Agent-to-agent settlement within Bittensor
 
-**Phase 2:** Settlement layer for Bittensor-adjacent AI infrastructure (compute markets, inference routing)
+**Phase 2:** Settlement layer for AI infrastructure (compute markets, inference routing)
 
 **Phase 3:** General-purpose agent-to-agent settlement (the agentic economy)
 
@@ -227,5 +227,3 @@ NASH starts with real trades, real volume, and real utility. The agentic future 
 ## License
 
 MIT
-
----

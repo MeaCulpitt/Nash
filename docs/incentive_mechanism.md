@@ -122,23 +122,34 @@ This is the **core insight**: validation becomes estimation, not computation.
 
 ### Post-Settlement Verification (Feedback Loop)
 
-After a settlement executes, **agents reveal their actual outcomes**. Validators can compare their **estimates** to this **ground truth** and be rewarded for accuracy.
+After a settlement executes, **agents must reveal their actual outcomes** to the subnet. This provides ground truth for validators to improve their models.
+
+**Why it matters:** Without ground truth, agents could game the system. With it, validators continuously improve.
+
+**Privacy model:**
 
 ```
-1. SETTLEMENT executes
-       ↓
-2. Agents reveal: "I got X, would accept again at Y"
-       ↓
-3. Validators compare: estimate vs. revealed
-       ↓
-4. Model improves via feedback loop
+Public:     Commitment range (e.g., "$1.40-$1.60/hr")
+Other agents: "Verified honest" (range contains actual)
+Validators:  Exact values (private to subnet)
 ```
 
-**Why This Works:**
-- **Ground truth:** Agents reveal actual utility after settlement
-- **Feedback loop:** Validators learn from every real settlement
-- **Continuous improvement:** Model gets better over time
-- **Agentic economy:** This is the foundation — agents building trust through verified settlements
+**How it works:**
+
+```
+Agent commits: "Will pay $1.40-$1.60/hr"
+Settlement executes at $1.52/hr
+Agent reveals: Actual outcome (private to validators)
+Validators verify → see exact $1.52
+Public sees: "Verified honest"
+Validators get: Exact values for model training
+```
+
+This creates a **honesty layer** backed by zero-knowledge proofs:
+- Agents prove honesty without revealing exact numbers to the public
+- Validators get exact values to improve their models
+- Other agents see only "verified" status
+- **Privacy guaranteed by TEE:** Validators run in Trusted Execution Environments (secure enclaves like Intel SGX). Even if a validator is compromised, agent data remains protected.
 
 > *"Can validators learn a model that estimates optimality from commitments, trained on cases where they knew the answer — and then improve that model every time a settlement reveals the truth?"*
 

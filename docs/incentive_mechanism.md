@@ -2,7 +2,7 @@
 
 ## Overview
 
-NASH incentivizes miners to find optimal trade settlements between Bittensor subnets. The mechanism rewards both **accuracy** (finding the true equilibrium) and **difficulty** (solving complex, multi-party trades).
+NASH incentivizes miners to find optimal trade settlements between Bittensor agents. The mechanism rewards both **accuracy** (finding the true equilibrium) and **difficulty** (solving complex, multi-party trades).
 
 The core innovation: Validators cannot verify optimality with incomplete information (commitments only). Instead, they **learn to estimate** optimality via a model trained on synthetic challenges where the answer is known.
 
@@ -52,7 +52,7 @@ PMU = base_reward × (1 / √solver_count) × complexity_multiplier × uniquenes
 | Simple two-party swap | 150+ | 0.3x | 1.0x |
 | Two-party with constraints | 50-100 | 0.7x | 1.2x |
 | Three-party optimization | 10-30 | 1.8x | 2.5x |
-| Multi-subnet resource triangle | 3-10 | 3.0x | 4.0x |
+| Multi-agent resource triangle | 3-10 | 3.0x | 4.0x |
 
 PMU ranges from **0.1 to 5.0x**.
 
@@ -65,7 +65,7 @@ Where:
   Q   = Quality (0.0 - 1.0) — accuracy of equilibrium proposal
   PMU = Proof of Marginal Utility (0.1 - 5.0) — difficulty multiplier
   TWF = Time-Weighted Fidelity (0.5 - 1.5) — reputation multiplier
-  SPF = Subnet Priority Factor (0.8 - 1.2) — priority-weighted satisfaction
+  SPF = Agent Priority Factor (0.8 - 1.2) — priority-weighted satisfaction
 ```
 
 ---
@@ -139,12 +139,12 @@ This is the **core insight**: validation becomes estimation, not computation.
 
 ### Post-Settlement Verification (Feedback Loop)
 
-After a settlement executes, subnets reveal their actual outcomes. Validators can compare their **estimates** to this **ground truth** and be rewarded for accuracy.
+After a settlement executes, **agents reveal their actual outcomes**. Validators can compare their **estimates** to this **ground truth** and be rewarded for accuracy.
 
 ```
 1. SETTLEMENT executes
        ↓
-2. Subnets reveal: "I got X, would accept again Y"
+2. Agents reveal: "I got X, would accept again at Y"
        ↓
 3. Validators compare: estimate vs. revealed
        ↓
@@ -167,10 +167,11 @@ def calculate_validator_verification_bonus(validator):
 ```
 
 **Why This Works:**
-- **Ground truth:** Subnets reveal actual utility after settlement
+- **Ground truth:** Agents reveal actual utility after settlement
 - **Feedback loop:** Validators learn from every real settlement
 - **Skin in the game:** Inaccurate estimates = V-Trust decay
 - **Continuous improvement:** Model gets better over time
+- **Agentic economy:** This is the foundation — agents building trust through verified settlements
 
 > *"Can validators learn a model that estimates optimality from commitments, trained on cases where they knew the answer — and then improve that model every time a settlement reveals the truth?"*
 
@@ -244,7 +245,7 @@ Finding Nash Equilibria is computationally non-trivial:
 |---------------|------------|------------------|
 | Two-player zero-sum | Polynomial | Simple swaps |
 | Multi-player general | **PPAD-complete** | NASH settlements |
-| Coalition formation | **NP-hard** | Multi-subnet trades |
+| Coalition formation | **NP-hard** | Multi-agent trades |
 
 This ensures the network requires **genuine computation**, not database lookups or simple matching.
 
@@ -307,7 +308,7 @@ This ensures the network requires **genuine computation**, not database lookups 
 ### Step-by-Step Description
 
 #### Step 1: Intent Collection
-- Subnets submit preferences via SDK/API
+- Agents submit preferences via SDK/API
 - Validator aggregates into challenge format
 - **Training mode:** Also generates synthetic challenges with known answers
 
@@ -342,7 +343,7 @@ This ensures the network requires **genuine computation**, not database lookups 
 #### Step 5: Settlement
 - Winning settlement published on-chain
 - Trade executes automatically
-- Subnets reveal preferences post-settlement (can reject if worse off)
+- Agents reveal preferences post-settlement (can reject if worse off)
 
 #### Step 6: Scoring
 ```
@@ -352,17 +353,19 @@ final_score = Q × PMU × TWF × SPF
 - **Q:** Quality (accuracy vs. estimated optimal)
 - **PMU:** Difficulty multiplier
 - **TWF:** Reputation multiplier
-- **SPF:** Subnet priority factor
+- **SPF:** Agent priority factor
 
 #### Step 7: Emission
 - TAO distributed proportionally to scores
 - Validators earn dividends from network emissions
 
+---
+
 ### Task Assignment Summary
 
 | Role | Task | Input | Output |
 |------|------|-------|--------|
-| **Subnet** | Submit intent | Preferences | Commitment vector |
+| **Agent** | Submit intent | Preferences | Commitment vector |
 | **Validator** | Orchestrate | Commitments | Weights |
 | **Miner** | Solve | Challenge | Equilibrium proposal |
 
@@ -376,5 +379,5 @@ final_score = Q × PMU × TWF × SPF
 | Max PMU | 5.0x |
 | TWF range | 0.5 - 1.5x |
 | Validator stake | ≥1000 τ |
-| Subnet capacity | 256 UIDs (64V + 192M) |
-| Proof type | PPAD-complete + learned estimation
+| Agent capacity | 256 UIDs (64V + 192M) |
+| Proof type | PPAD-complete + learned estimation |
